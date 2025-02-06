@@ -1,8 +1,8 @@
 "use client";
 
-import { Context } from "@/app/context";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
+import { Context } from "../../context/index";
 import {
   Badge,
   Button,

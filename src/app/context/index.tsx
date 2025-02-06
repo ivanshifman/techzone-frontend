@@ -1,9 +1,10 @@
 "use client";
 
 import { useReducer, createContext, useEffect } from "react";
+import requests from "../../services/api";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import requests from "@/services/api";
+
 
 type Props = {
   children: React.ReactNode;
