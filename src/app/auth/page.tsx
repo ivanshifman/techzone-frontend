@@ -8,7 +8,7 @@ const AuthPage = () => {
         <RegisterLogin />
       </Col>
       <Col sm={6} className="mt-3">
-        <RegisterLogin isResgisterForm={true} />
+        <RegisterLogin isRegisterForm={true} />
       </Col>
     </Row>
   );

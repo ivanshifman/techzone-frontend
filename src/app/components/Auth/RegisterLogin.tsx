@@ -1,42 +1,41 @@
 "use client";
 
-import { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { Button, Card, Form } from "react-bootstrap";
-import Router from "next/router";
+import { useRouter } from "next/navigation";
 import { Context } from "../../context";
 import { Users } from "../../../services/user.service";
 import { ResponsePayload } from "../../../services/api";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+
 interface IRegisterLoginProps {
-  isResgisterForm?: boolean;
+  isRegisterForm?: boolean;
 }
 
 interface FormValues {
-	name?: string;
-	email?: string;
-	password?: string;
-	confirmPassword?: string;
-	otp?: string;
+  name?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  otp?: string;
 }
 
-const initalForm = {
+const initialForm = {
   email: "",
   password: "",
   confirmPassword: "",
   name: "",
 };
 
-const RegisterLogin: FC<IRegisterLoginProps> = ({
-  isResgisterForm = false,
-}) => {
+const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm();
-  const [authForm, setAuthForm] = useState(initalForm);
+  const [authForm, setAuthForm] = useState<FormValues>(initialForm);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingForgotPwd, setIsLoadingForgotPwd] = useState(false);
   const [otpTime, setOtpTime] = useState(false);
@@ -47,34 +46,35 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({
     dispatch,
   } = useContext(Context);
 
-  useEffect(() => {
-    if (user && user.email) {
-      Router.push("/my-account");
-    }
-  }, [user]);
+  const router = useRouter();
 
-  
+  useEffect(() => {
+    if (user?.email) {
+      router.push("/my-account");
+    }
+  }, [user, router]);
+
   const onSubmit = async (data: FormValues) => {
     try {
       const { email, password, name, confirmPassword } = data;
-      if (isResgisterForm && password !== confirmPassword) {
+      if (isRegisterForm && password !== confirmPassword) {
         throw new Error("Passwords do not match");
       }
       setIsLoading(true);
-      const payload = { email, password, ...(isResgisterForm && { name }) };
+      const payload = { email, password, ...(isRegisterForm && { name }) };
 
-      const { success, message, result }: ResponsePayload = isResgisterForm
+      const { success, message, result }: ResponsePayload = isRegisterForm
         ? await Users.registerNewUser(payload)
         : await Users.loginUser(payload);
 
       if (!success) throw new Error(message);
 
-      if (!isResgisterForm) {
+      if (!isRegisterForm) {
         dispatch({ type: "LOGIN", payload: result?.user });
         toast.success(message, {
           autoClose: 5000,
         });
-        Router.push("/");
+        router.push("/");
       }
       toast.success(message, {
         autoClose: 5000,
@@ -82,7 +82,7 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({
     } catch (error: any) {
       let errorMessage = "";
       if (error.response) {
-        errorMessage = error.response.data.message;
+        errorMessage = error.response?.data?.message;
       } else {
         for (const field in errors) {
           if (errors[field]?.message) {
@@ -101,97 +101,97 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({
     }
   };
 
-  const handleRegister = async (e: any) => {
-    e.preventDefault();
-    try {
-      const { email, name, password, confirmPassword } = authForm;
-      if (!name) {
-        throw new Error("Invalid name");
-      }
-      //   if (!validator.isEmail(email)) {
-      //     throw new Error("Invalid email");
-      //   }
-      if (password !== confirmPassword) {
-        console.error("Invalid password", password, confirmPassword);
-        throw new Error("Password does not match");
-      }
-      if (password.length < 6) {
-        throw new Error("Password is too short. Minimum 6 characters");
-      }
-      setIsLoading(true);
-      const payload = {
-        email: authForm.email,
-        password: authForm.password,
-        name: authForm.name,
-      };
+  // const handleRegister = async (e: any) => {
+  //   e.preventDefault();
+  //   try {
+  //     const { email, name, password, confirmPassword } = authForm;
+  //     if (!name) {
+  //       throw new Error("Invalid name");
+  //     }
+  //     //   if (!validator.isEmail(email)) {
+  //     //     throw new Error("Invalid email");
+  //     //   }
+  //     if (password !== confirmPassword) {
+  //       console.error("Invalid password", password, confirmPassword);
+  //       throw new Error("Password does not match");
+  //     }
+  //     if (password.length < 6) {
+  //       throw new Error("Password is too short. Minimum 6 characters");
+  //     }
+  //     setIsLoading(true);
+  //     const payload = {
+  //       email: authForm.email,
+  //       password: authForm.password,
+  //       name: authForm.name,
+  //     };
 
-      const { success, message }: ResponsePayload = await Users.registerNewUser(
-        payload
-      );
-      if (!success) throw new Error(message);
-      setOtpForm({ ...otpForm, email: email });
-      setOtpTime(true);
-      toast.success(message, {
-        autoClose: 5000,
-      });
-      //   addToast(message, { appearance: "success", autoDismiss: true });
-    } catch (error: any) {
-      //   if (error.response) {
-      //     return addToast(error.response.data.message, {
-      //       appearance: "error",
-      //       autoDismiss: true,
-      //     });
-      //   }
-      //   addToast(error.message, { appearance: "error", autoDismiss: true });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     const { success, message }: ResponsePayload = await Users.registerNewUser(
+  //       payload
+  //     );
+  //     if (!success) throw new Error(message);
+  //     setOtpForm({ ...otpForm, email: email });
+  //     setOtpTime(true);
+  //     toast.success(message, {
+  //       autoClose: 5000,
+  //     });
+  //     //   addToast(message, { appearance: "success", autoDismiss: true });
+  //   } catch (error: any) {
+  //     //   if (error.response) {
+  //     //     return addToast(error.response.data.message, {
+  //     //       appearance: "error",
+  //     //       autoDismiss: true,
+  //     //     });
+  //     //   }
+  //     //   addToast(error.message, { appearance: "error", autoDismiss: true });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-  const handleLogin = async (e: any) => {
-    e.preventDefault();
-    try {
-      const { email, password } = authForm;
-      if (!email || !password) {
-        throw new Error("Invalid email or password");
-      }
-      //   if (!validator.isEmail(email)) {
-      //     throw new Error("Invalid email");
-      //   }
-      if (password.length < 6) {
-        throw new Error("Password is too short. Minimum 6 characters");
-      }
-      setIsLoading(true);
-      const payload = {
-        email,
-        password,
-      };
-      const { success, message, result }: ResponsePayload =
-        await Users.loginUser(payload);
-      if (!success) throw new Error(message);
+  // const handleLogin = async (e: any) => {
+  //   e.preventDefault();
+  //   try {
+  //     const { email, password } = authForm;
+  //     if (!email || !password) {
+  //       throw new Error("Invalid email or password");
+  //     }
+  //     //   if (!validator.isEmail(email)) {
+  //     //     throw new Error("Invalid email");
+  //     //   }
+  //     if (password.length < 6) {
+  //       throw new Error("Password is too short. Minimum 6 characters");
+  //     }
+  //     setIsLoading(true);
+  //     const payload = {
+  //       email,
+  //       password,
+  //     };
+  //     const { success, message, result }: ResponsePayload =
+  //       await Users.loginUser(payload);
+  //     if (!success) throw new Error(message);
 
-      dispatch({
-        type: "LOGIN",
-        payload: result?.user,
-      });
-      toast.success(message, {
-        autoClose: 5000,
-      });
-      //   addToast(message, { appearance: "success", autoDismiss: true });
-      Router.push("/");
-    } catch (error: any) {
-      console.log(error);
-      //   if (error.response) {
-      //     return addToast(error.response.data.message, {
-      //       appearance: "error",
-      //       autoDismiss: true,
-      //     });
-      //   }
-      //   addToast(error.message, { appearance: "error", autoDismiss: true });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     dispatch({
+  //       type: "LOGIN",
+  //       payload: result?.user,
+  //     });
+  //     toast.success(message, {
+  //       autoClose: 5000,
+  //     });
+  //     //   addToast(message, { appearance: "success", autoDismiss: true });
+  //     router.push("/");
+  //   } catch (error: any) {
+  //     console.log(error);
+  //     //   if (error.response) {
+  //     //     return addToast(error.response.data.message, {
+  //     //       appearance: "error",
+  //     //       autoDismiss: true,
+  //     //     });
+  //     //   }
+  //     //   addToast(error.message, { appearance: "error", autoDismiss: true });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const otpResend = async () => {
     try {
@@ -199,6 +199,7 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({
       //   if (!validator.isEmail(email)) {
       //     throw new Error("Invalid email");
       //   }
+      if (!email) throw new Error("Email is required.");
       setIsLoading(true);
       const { success, message }: ResponsePayload = await Users.resendOTP(
         email
@@ -207,67 +208,54 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({
       toast.success(message, {
         autoClose: 5000,
       });
-      //   addToast(message, { appearance: "success", autoDismiss: true });
     } catch (error: any) {
-      if (error.response) {
-        // return addToast(error.response.data.message, {
-        //   appearance: "error",
-        //   autoDismiss: true,
-        // });
-        toast.error(error.response.data.message, {
+      toast.error(
+        error.response?.data?.errorResponse.message || error.message,
+        {
           autoClose: 5000,
-        });
-      }
-      //   addToast(error.message, { appearance: "error", autoDismiss: true });
-      toast.error(error.message, {
-        autoClose: 5000,
-      });
+        }
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
-  const verifyUser = async (e: any) => {
+  const verifyUser = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       //   if (!validator.isEmail(otpForm.email)) {
       //     throw new Error("Invalid email");
       //   }
+      if (!otpForm.email) throw new Error("Email is required.");
+      if (!otpForm.otp) throw new Error("OTP is required.");
       setIsLoading(true);
       const { success, message }: ResponsePayload = await Users.verifyOTP(
         otpForm.otp,
         otpForm.email
       );
       if (!success) throw new Error(message);
-      //   addToast(message, { appearance: "success", autoDismiss: true });
       toast.success(message, {
         autoClose: 5000,
       });
       setOtpTime(false);
-      setAuthForm(initalForm);
+      setAuthForm(initialForm);
     } catch (error: any) {
-      if (error.response) {
-        // return addToast(error.response.data.message, {
-        //   appearance: "error",
-        //   autoDismiss: true,
-        // });
-        toast.error(error.response.data.message, {
+      toast.error(
+        error.response?.data?.errorResponse.message || error.message,
+        {
           autoClose: 5000,
-        });
-      }
-      //   addToast(error.message, { appearance: "error", autoDismiss: true });
-      toast.error(error.message, {
-        autoClose: 5000,
-      });
+        }
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
-  const forgotPassword = async (e: any) => {
+  const forgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const { email } = authForm;
+      if (!email) throw new Error("Email is required.");
       //   if (!validator.isEmail(email)) {
       //     throw new Error(
       //       "Invalid email. Plese enter a valid email and we will send you a password for you"
@@ -277,25 +265,16 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({
       const { success, message }: ResponsePayload =
         await Users.forgotUserPassword(email);
       if (!success) throw new Error(message);
-      //   addToast(message, { appearance: "success", autoDismiss: true });
       toast.success(message, {
         autoClose: 5000,
       });
-      console.log(message, success);
     } catch (error: any) {
-      if (error.response) {
-        // return addToast(error.response.data.message, {
-        //   appearance: "error",
-        //   autoDismiss: true,
-        // });
-        toast.error(error.response.data.message, {
+      toast.error(
+        error.response?.data?.errorResponse.message || error.message,
+        {
           autoClose: 5000,
-        });
-      }
-      //   addToast(error.message, { appearance: "error", autoDismiss: true });
-      toast.error(error.message, {
-        autoClose: 5000,
-      });
+        }
+      );
       console.log(error);
     } finally {
       setIsLoadingForgotPwd(false);
@@ -304,10 +283,10 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({
 
   return (
     <Card>
-      <Card.Header>{isResgisterForm ? "Register" : "Login"}</Card.Header>
+      <Card.Header>{isRegisterForm ? "Register" : "Login"}</Card.Header>
       <Card.Body>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          {isResgisterForm && (
+          {isRegisterForm && (
             <Form.Group className="mb-3">
               <Form.Label>Full name</Form.Label>
               <Form.Control
@@ -378,7 +357,7 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({
               </Form.Text>
             )}
           </Form.Group>
-          {isResgisterForm && (
+          {isRegisterForm && (
             <>
               <Form.Group className="mb-3">
                 <Form.Label>Re-type password</Form.Label>
@@ -464,12 +443,12 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({
                     aria-hidden="true"
                   ></span>
                 )}
-                {isResgisterForm ? "Register" : "Login"}
+                {isRegisterForm ? "Register" : "Login"}
               </Button>
             </Form.Group>
           )}
         </Form>
-        {!isResgisterForm && (
+        {!isRegisterForm && (
           <a className="text-decoration-none" href="" onClick={forgotPassword}>
             {isLoadingForgotPwd && (
               <span
