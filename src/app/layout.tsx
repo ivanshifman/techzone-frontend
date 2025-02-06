@@ -5,6 +5,7 @@ import { Container } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
 import TopHead from "./components/shared/TopHead";
 import { Provider } from "./context";
+import Footer from "./components/shared/Footer";
 
 export const metadata = {
   title: "TechZone",
@@ -27,6 +28,7 @@ export default function RootLayout({
             <ToastContainer />
             <TopHead />
             {children}
+            <Footer />
           </Container>
         </Provider>
       </body>
