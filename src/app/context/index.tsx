@@ -4,47 +4,28 @@ import { useReducer, createContext, useEffect } from "react";
 import requests from "../../services/api";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import {
+  Action,
+  ContextType,
+  CsrfTokenResponse,
+  Props,
+  State,
+} from "./context.types";
 
-
-type Props = {
-  children: React.ReactNode;
-};
-
-const initialState = {
+const initialState: State = {
   user: null,
 };
 
-type Context = {
-  state: Record<string, any>;
-  dispatch: (action: {
-    type: string;
-    payload: Record<string, any> | undefined;
-  }) => void;
-  cartItems: any;
-  cartDispatch: (action: {
-    type: string;
-    payload: Record<string, any>;
-  }) => void;
-};
-
-const initialContext: Context = {
+const initialContext: ContextType = {
   state: initialState,
   dispatch: () => {},
   cartItems: [],
-  cartDispatch: function (action: {
-    type: string;
-    payload: Record<string, any>;
-  }): void {
-    throw new Error("Function not implemented.");
-  },
+  cartDispatch: () => {},
 };
 
-const Context = createContext<Context>(initialContext);
+const Context = createContext<ContextType>(initialContext);
 
-const rootReducer = (
-  state: Record<string, any>,
-  action: { type: string; payload: Record<string, any> | undefined }
-) => {
+const rootReducer = (state: Record<string, any>, action: Action) => {
   switch (action.type) {
     case "LOGIN":
       return { ...state, user: action.payload };
@@ -57,10 +38,7 @@ const rootReducer = (
   }
 };
 
-const cartReducer = (
-  state: any,
-  action: { type: string; payload: Record<string, any> | undefined }
-) => {
+const cartReducer = (state: any, action: Action) => {
   switch (action.type) {
     case "ADD_TO_CART":
       const cartItems = [...state, action.payload];
@@ -111,12 +89,6 @@ const Provider = ({ children }: Props) => {
       type: "GET_CART_ITEMS",
       payload: storedCart ? JSON.parse(storedCart) : [],
     });
-
-    interface CsrfTokenResponse {
-      success: boolean;
-      message: string;
-      result: string;
-    }
 
     const getCsrfToken = async () => {
       try {

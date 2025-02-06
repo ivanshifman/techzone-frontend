@@ -1,12 +1,10 @@
 import "./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-
 import { Container } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
 import TopHead from "./components/shared/TopHead";
 import { Provider } from "./context";
-
 
 export const metadata = {
   title: "TechZone",

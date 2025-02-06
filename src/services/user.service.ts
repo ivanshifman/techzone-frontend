@@ -1,15 +1,20 @@
 import requests, { ResponsePayload } from "./api";
 
 export const Users = {
-  getUser: async (id: string): Promise<ResponsePayload> => requests.get<ResponsePayload>(`/users/${id}`),
+  getUser: async (id: string): Promise<ResponsePayload> =>
+    requests.get<ResponsePayload>(`/users/${id}`),
 
-  getUsers: async (): Promise<ResponsePayload> => requests.get<ResponsePayload>("/users"),
+  getUsers: async (): Promise<ResponsePayload> =>
+    requests.get<ResponsePayload>("/users"),
 
   registerNewUser: async (user: any): Promise<ResponsePayload> =>
     requests.post<ResponsePayload>("/users", { ...user, type: "customer" }),
 
   loginUser: async (user: any): Promise<ResponsePayload> => {
-    const loginUserRes = await requests.post<ResponsePayload>("/users/login", user);
+    const loginUserRes = await requests.post<ResponsePayload>(
+      "/users/login",
+      user
+    );
     window.localStorage.setItem(
       "_tech_user",
       JSON.stringify(loginUserRes.result.user)
@@ -22,7 +27,9 @@ export const Users = {
       `/users/update-name-password/${id}`,
       user
     );
-    const userData = JSON.parse(window.localStorage.getItem("_tech_user") || "{}");
+    const userData = JSON.parse(
+      window.localStorage.getItem("_tech_user") || "{}"
+    );
     userData.name = user?.name;
     window.localStorage.setItem("_tech_user", JSON.stringify(userData));
     return updateUserRes;
@@ -38,7 +45,10 @@ export const Users = {
     requests.get<ResponsePayload>(`/users/verify-email/${otp}/${email}`),
 
   logoutUser: async (): Promise<ResponsePayload> => {
-    const logoutUserRes = await requests.put<ResponsePayload>("/users/logout", {});
+    const logoutUserRes = await requests.put<ResponsePayload>(
+      "/users/logout",
+      {}
+    );
     window.localStorage.removeItem("_tech_user");
     return logoutUserRes;
   },
