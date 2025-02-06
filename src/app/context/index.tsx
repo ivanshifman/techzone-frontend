@@ -1,12 +1,15 @@
+"use client";
+
 import { useReducer, createContext, useEffect } from "react";
 import axios from "axios";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import requests from "@/services/api";
 
 type Props = {
   children: React.ReactNode;
 };
 
-const intialState = {
+const initialState = {
   user: null,
 };
 
@@ -24,7 +27,7 @@ type Context = {
 };
 
 const initialContext: Context = {
-  state: intialState,
+  state: initialState,
   dispatch: () => {},
   cartItems: [],
   cartDispatch: function (action: {
@@ -60,13 +63,13 @@ const cartReducer = (
   switch (action.type) {
     case "ADD_TO_CART":
       const cartItems = [...state, action.payload];
-      window.localStorage.setItem("_digi_cart", JSON.stringify(cartItems));
+      window.localStorage.setItem("_tech_cart", JSON.stringify(cartItems));
       return cartItems;
     case "REMOVE_FROM_CART":
       const newCartItems = state.filter(
         (item: { skuId: string }) => item.skuId !== action.payload?.skuId
       );
-      window.localStorage.setItem("_digi_cart", JSON.stringify(newCartItems));
+      window.localStorage.setItem("_tech_cart", JSON.stringify(newCartItems));
       return newCartItems;
     case "UPDATE_CART":
       const updatedCartItems = state.map((item: any) => {
@@ -76,14 +79,14 @@ const cartReducer = (
         return item;
       });
       window.localStorage.setItem(
-        "_digi_cart",
+        "_tech_cart",
         JSON.stringify(updatedCartItems)
       );
       return updatedCartItems;
     case "GET_CART_ITEMS":
       return action.payload;
     case "CLEAR_CART":
-      window.localStorage.removeItem("_digi_cart");
+      window.localStorage.removeItem("_tech_cart");
       return [];
     default:
       return state;
@@ -91,67 +94,74 @@ const cartReducer = (
 };
 
 const Provider = ({ children }: Props) => {
-  const [state, dispatch] = useReducer(rootReducer, intialState);
+  const [state, dispatch] = useReducer(rootReducer, initialState);
   const [cartItems, cartDispatch] = useReducer(cartReducer, []);
-
   const router = useRouter();
 
   useEffect(() => {
+    const storedUser = localStorage.getItem("_tech_user");
     dispatch({
       type: "LOGIN",
-      payload: JSON.parse(window.localStorage.getItem("_digi_user") || "{}"),
+      payload: storedUser ? JSON.parse(storedUser) : null,
     });
-    const cartItems = JSON.parse(
-      window.localStorage.getItem("_digi_cart") || "[]"
-    );
-    cartDispatch({ type: "GET_CART_ITEMS", payload: cartItems });
-    return;
-  }, []);
 
-  axios.interceptors.response.use(
-    function (response) {
-      return response;
-    },
-    function (error) {
-      let res = error.response;
-      if (res.status === 401 && res.config && !res.config.__isRetryRequest) {
-        return new Promise((resolve, reject) => {
-          axios
-            .put("/api/v1/users/logout")
-            .then((data) => {
-              console.log("/401 error > logout");
-              dispatch({
-                type: "LOGOUT",
-                payload: undefined,
-              });
-              localStorage.removeItem("_digi_user");
-              router.push("/auth");
-            })
-            .catch((err) => {
-              console.log("AXIOS INTERCEPTORS ERR", err);
-              reject(error);
-            });
-        });
-      }
-      return Promise.reject(error);
+    const storedCart = localStorage.getItem("_tech_cart");
+    cartDispatch({
+      type: "GET_CART_ITEMS",
+      payload: storedCart ? JSON.parse(storedCart) : [],
+    });
+
+    interface CsrfTokenResponse {
+      success: boolean;
+      message: string;
+      result: string;
     }
-  );
 
-  useEffect(() => {
     const getCsrfToken = async () => {
-      const { data } = await axios.get(
-        process.env.NEXT_PUBLIC_BASE_API_PREFIX + "/csrf-token"
-      );
-      const csrfToken = data.result;
-      if (!csrfToken) {
-        throw new Error("CSRF Token not found");
+      try {
+        const { result: csrfToken } = await requests.get<CsrfTokenResponse>(
+          "/csrf-token"
+        );
+        if (!csrfToken) throw new Error("CSRF Token not found");
+        axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
+        console.log("CSRF Token:", csrfToken);
+      } catch (error) {
+        console.error("Error fetching CSRF token:", error);
       }
-      // csrf token to axios header
-      axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
-      console.log("CSRF Token", csrfToken, axios.defaults.headers);
     };
     getCsrfToken();
   }, []);
+
+  useEffect(() => {
+    const interceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (
+          error.response?.status === 401 &&
+          error.config &&
+          !error.config.__isRetryRequest
+        ) {
+          return new Promise((resolve, reject) => {
+            requests
+              .put("/users/logout", {})
+              .then(() => {
+                console.log("/401 error > logout");
+                dispatch({ type: "LOGOUT", payload: undefined });
+                localStorage.removeItem("_tech_user");
+                router.push("/auth");
+              })
+              .catch((err) => {
+                console.log("AXIOS INTERCEPTORS ERR", err);
+                reject(error);
+              });
+          });
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return () => axios.interceptors.response.eject(interceptor);
+  }, [router]);
 
   return (
     <Context.Provider value={{ state, dispatch, cartItems, cartDispatch }}>

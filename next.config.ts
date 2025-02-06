@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  swcMinify: true,
+  // swcMinify: true,
   experimental: { esmExternals: true },
 };
 
