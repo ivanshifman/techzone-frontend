@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Context } from "../../context/index";
 import {
   Badge,
@@ -20,6 +20,8 @@ import styles from "../../styles/Home.module.css";
 const TopHead = () => {
   const [searchText, setSearchText] = useState("");
   const [baseType, setBaseType] = useState("Applications");
+  const [total, setTotal] = useState(0);
+  const [itemCount, setItemCount] = useState(0);
 
   const {
     state: { user },
@@ -49,6 +51,17 @@ const TopHead = () => {
     }
   };
 
+  useEffect(() => {
+    setTotal(
+      cartItems.reduce(
+        (total: number, item: { quantity: number; price: number }) =>
+          total + Number(item.price) * Number(item.quantity),
+        0
+      )
+    );
+    setItemCount(cartItems.length);
+  }, [cartItems]);
+
   return (
     <>
       <Row className="mt-3">
@@ -64,6 +77,7 @@ const TopHead = () => {
             </InputGroup.Text>
             <Form.Control
               type="text"
+              className="form-control-no-focus"
               aria-label="Search product"
               placeholder="Search the product here..."
               value={searchText}
@@ -104,13 +118,7 @@ const TopHead = () => {
           </Nav>
           <Nav>
             <Nav.Link className={styles.cartItems} onClick={() => {}}>
-              Items: <Badge bg="secondary">{cartItems.length}</Badge> (USD{" "}
-              {cartItems.reduce(
-                (total: number, item: { quantity: number; price: number }) =>
-                  total + Number(item.price) * Number(item.quantity),
-                0
-              )}
-              )
+              Items: <Badge bg="secondary">{itemCount}</Badge> (USD {total})
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>
