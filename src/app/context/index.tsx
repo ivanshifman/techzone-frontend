@@ -92,11 +92,14 @@ const Provider = ({ children }: Props) => {
 
     const getCsrfToken = async () => {
       try {
-        const { result: csrfToken } = await requests.get<CsrfTokenResponse>(
-          "/csrf-token"
-        );
-        if (!csrfToken) throw new Error("CSRF Token not found");
+        const response = await requests.get<CsrfTokenResponse>("/csrf-token");
+        const csrfToken = response.result; 
+
+        if (!csrfToken || typeof csrfToken !== "string") {
+          throw new Error("CSRF Token not found or invalid");
+        }
         axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
+        
         console.log("CSRF Token:", csrfToken);
       } catch (error) {
         console.error("Error fetching CSRF token:", error);

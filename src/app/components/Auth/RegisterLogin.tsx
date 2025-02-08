@@ -7,7 +7,7 @@ import { Context } from "../../context";
 import { Users } from "../../../services/user.service";
 import { ResponsePayload } from "../../../services/api";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+import { showErrorToast, showSuccessToast } from "../../utils/toast";
 
 interface IRegisterLoginProps {
   isRegisterForm?: boolean;
@@ -37,10 +37,12 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
     dispatch,
   } = useContext(Context);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingForgotPwd, setIsLoadingForgotPwd] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [isResendingOTP, setIsResendingOTP] = useState(false);
+  const [loading, setLoading] = useState({
+    auth: false,
+    forgotPwd: false,
+    verifying: false,
+    resendingOTP: false,
+  });
   const [otpTime, setOtpTime] = useState(false);
 
   const router = useRouter();
@@ -49,7 +51,13 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
     if (user?.email) {
       router.replace("/my-account");
     }
-  }, [user]);
+  }, [user?.email, router]);
+
+  const getFieldValue = (field: keyof FormValues) => {
+    const value = getValues(field);
+    if (!value?.trim()) throw new Error(`${field} is required.`);
+    return value;
+  };
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -57,7 +65,8 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
       if (isRegisterForm && password !== confirmPassword) {
         throw new Error("Passwords do not match");
       }
-      setIsLoading(true);
+      setLoading((prev) => ({ ...prev, auth: true }));
+
       const payload = { email, password, ...(isRegisterForm && { name }) };
 
       const { success, message, result }: ResponsePayload = isRegisterForm
@@ -68,19 +77,14 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
 
       if (!isRegisterForm) {
         dispatch({ type: "LOGIN", payload: result?.user });
-        toast.success(message, {
-          autoClose: 5000,
-        });
+        showSuccessToast(message);
         router.push("/");
       }
 
       if (isRegisterForm) {
         setOtpTime(true);
       }
-
-      toast.success(message, {
-        autoClose: 5000,
-      });
+      showSuccessToast(message);
     } catch (error: any) {
       const errorMessage =
         error?.response?.data?.message ||
@@ -92,91 +96,80 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
           : "An unknown error occurred");
 
       if (errorMessage) {
-        toast.error(errorMessage, { autoClose: 5000 });
+        showErrorToast(errorMessage);
       }
     } finally {
-      setIsLoading(false);
+      setLoading((prev) => ({ ...prev, auth: false }));
     }
   };
 
   const otpResend = async () => {
     try {
-      const email = getValues("email");
+      const email = getFieldValue("email");
       if (!email) throw new Error("Email is required.");
-      setIsResendingOTP(true);
+
+      setLoading((prev) => ({ ...prev, resendingOTP: true }));
+
       const { success, message }: ResponsePayload = await Users.resendOTP(
         email
       );
       if (!success) throw new Error(message);
-      toast.success(message, {
-        autoClose: 5000,
-      });
+      showSuccessToast(message);
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.errorResponse.message || error.message,
-        {
-          autoClose: 5000,
-        }
+      showErrorToast(
+        error.response?.data?.errorResponse.message || error.message
       );
     } finally {
-      setIsResendingOTP(false);
+      setLoading((prev) => ({ ...prev, resendingOTP: false }));
     }
   };
 
   const verifyUser = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const email = getValues("email") ?? "";
-      const otp = getValues("otp") ?? "";
+      const email = getFieldValue("email") ?? "";
+      const otp = getFieldValue("otp") ?? "";
       if (!email.trim()) throw new Error("Email is required.");
       if (!otp.trim()) throw new Error("OTP is required.");
-      setIsVerifying(true);
+
+      setLoading((prev) => ({ ...prev, verifying: true }));
+
       const { success, message }: ResponsePayload = await Users.verifyOTP(
         otp,
         email
       );
       if (!success) throw new Error(message);
-      toast.success(message, {
-        autoClose: 5000,
-      });
+      showSuccessToast(message);
       setOtpTime(false);
       setValue("email", "");
       setValue("password", "");
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.errorResponse.message || error.message,
-        {
-          autoClose: 5000,
-        }
+      showErrorToast(
+        error.response?.data?.errorResponse.message || error.message
       );
     } finally {
-      setIsVerifying(false);
+      setLoading((prev) => ({ ...prev, verifying: false }));
     }
   };
 
   const forgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const email = getValues("email");
+      const email = getFieldValue("email");
       if (!email) throw new Error("Email is required.");
 
-      setIsLoadingForgotPwd(true);
+      setLoading((prev) => ({ ...prev, forgotPwd: true }));
       const { success, message }: ResponsePayload =
         await Users.forgotUserPassword(email);
 
       if (!success) throw new Error(message);
-      toast.success(message, {
-        autoClose: 5000,
-      });
+      showSuccessToast(message);
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.errorResponse.message || error.message,
-        {
-          autoClose: 5000,
-        }
+      showErrorToast(
+        error.response?.data?.errorResponse.message || error.message
       );
     } finally {
-      setIsLoadingForgotPwd(false);
+      setLoading((prev) => ({ ...prev, forgotPwd: false }));
     }
   };
 
@@ -218,7 +211,7 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
                 },
               })}
               placeholder="name@example.com"
-              disabled={isResendingOTP || otpTime}
+              disabled={loading.resendingOTP || otpTime}
               autoComplete="email"
             />
             {errors.email && (
@@ -305,10 +298,10 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
                 variant="info"
                 type="submit"
                 className="btnAuth"
-                disabled={isLoading}
+                disabled={loading.auth}
                 onClick={verifyUser}
               >
-                {isVerifying && (
+                {loading.verifying && (
                   <span
                     className="spinner-border spinner-border-sm mr-2"
                     role="status"
@@ -324,9 +317,9 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
                 variant="info"
                 type="submit"
                 className="btnAuth"
-                disabled={isLoading}
+                disabled={loading.auth}
               >
-                {isLoading && (
+                {loading.auth && (
                   <span
                     className="spinner-border spinner-border-sm mr-2"
                     role="status"
@@ -340,7 +333,7 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
         </Form>
         {!isRegisterForm && (
           <a className="text-decoration-none" href="#" onClick={forgotPassword}>
-            {isLoadingForgotPwd && (
+            {loading.forgotPwd && (
               <span
                 className="spinner-border spinner-border-sm"
                 role="status"
