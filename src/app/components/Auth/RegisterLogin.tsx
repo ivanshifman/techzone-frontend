@@ -42,15 +42,14 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResendingOTP, setIsResendingOTP] = useState(false);
   const [otpTime, setOtpTime] = useState(false);
-  const [otpForm, setOtpForm] = useState({ email: "", otp: "" });
 
   const router = useRouter();
 
   useEffect(() => {
     if (user?.email) {
-      router.push("/my-account");
+      router.replace("/my-account");
     }
-  }, [user, router]);
+  }, [user]);
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -127,12 +126,14 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
   const verifyUser = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (!otpForm.email.trim()) throw new Error("Email is required.");
-      if (!otpForm.otp.trim()) throw new Error("OTP is required.");
+      const email = getValues("email") ?? "";
+      const otp = getValues("otp") ?? "";
+      if (!email.trim()) throw new Error("Email is required.");
+      if (!otp.trim()) throw new Error("OTP is required.");
       setIsVerifying(true);
       const { success, message }: ResponsePayload = await Users.verifyOTP(
-        otpForm.otp,
-        otpForm.email
+        otp,
+        email
       );
       if (!success) throw new Error(message);
       toast.success(message, {
@@ -162,6 +163,7 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
       setIsLoadingForgotPwd(true);
       const { success, message }: ResponsePayload =
         await Users.forgotUserPassword(email);
+
       if (!success) throw new Error(message);
       toast.success(message, {
         autoClose: 5000,
@@ -251,7 +253,9 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
           {isRegisterForm && (
             <>
               <Form.Group className="mb-3">
-                <Form.Label htmlFor="confirmPassword">Re-type password</Form.Label>
+                <Form.Label htmlFor="confirmPassword">
+                  Re-type password
+                </Form.Label>
                 <Form.Control
                   type="password"
                   id="confirmPassword"
@@ -274,14 +278,14 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
               </Form.Group>
               {otpTime && (
                 <Form.Group className="mb-3">
-                  <Form.Label>OTP</Form.Label>
+                  <Form.Label htmlFor="otp">OTP</Form.Label>
                   <Form.Control
                     type="text"
+                    id="otp"
+                    className="form-control-no-focus"
                     {...register("otp")}
                     placeholder="OTP"
-                    onChange={(e) =>
-                      setOtpForm({ ...otpForm, otp: e.target.value })
-                    }
+                    autoComplete="otp"
                   />
 
                   <Button
@@ -304,7 +308,7 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
                 disabled={isLoading}
                 onClick={verifyUser}
               >
-                {isLoading && (
+                {isVerifying && (
                   <span
                     className="spinner-border spinner-border-sm mr-2"
                     role="status"
@@ -335,7 +339,7 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
           )}
         </Form>
         {!isRegisterForm && (
-          <a className="text-decoration-none" href="" onClick={forgotPassword}>
+          <a className="text-decoration-none" href="#" onClick={forgotPassword}>
             {isLoadingForgotPwd && (
               <span
                 className="spinner-border spinner-border-sm"

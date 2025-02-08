@@ -17,7 +17,7 @@ export const Users = {
     );
     window.localStorage.setItem(
       "_tech_user",
-      JSON.stringify(loginUserRes.result.user)
+      JSON.stringify(loginUserRes.result?.result?.user || {})
     );
     return loginUserRes;
   },

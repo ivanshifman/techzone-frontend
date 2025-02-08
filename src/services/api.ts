@@ -22,8 +22,9 @@ api.interceptors.response.use(
   }
 );
 
-const responseBody = <T>(response: AxiosResponse<ResponsePayload<T>>): T =>
-  response.data.result;
+const responseBody = <T>(response: AxiosResponse<ResponsePayload<T>>): ResponsePayload<T> =>
+  response.data;
+
 
 const requests = {
   get: <T>(url: string) => api.get<ResponsePayload<T>>(url).then(responseBody),
@@ -36,5 +37,6 @@ const requests = {
   delete: <T>(url: string) =>
     api.delete<ResponsePayload<T>>(url).then(responseBody),
 };
+
 
 export default requests;
