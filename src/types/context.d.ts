@@ -18,8 +18,3 @@ export type ContextType = {
   cartDispatch: (action: Action) => void;
 };
 
-export interface CsrfTokenResponse {
-  success: boolean;
-  message: string;
-  result: string;
-}

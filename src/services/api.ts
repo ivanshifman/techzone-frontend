@@ -8,9 +8,6 @@ export interface ResponsePayload<T = any> {
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
   withCredentials: true,
 });
 
@@ -22,9 +19,9 @@ api.interceptors.response.use(
   }
 );
 
-const responseBody = <T>(response: AxiosResponse<ResponsePayload<T>>): ResponsePayload<T> =>
-  response.data;
-
+const responseBody = <T>(
+  response: AxiosResponse<ResponsePayload<T>>
+): ResponsePayload<T> => response.data;
 
 const requests = {
   get: <T>(url: string) => api.get<ResponsePayload<T>>(url).then(responseBody),
@@ -37,6 +34,5 @@ const requests = {
   delete: <T>(url: string) =>
     api.delete<ResponsePayload<T>>(url).then(responseBody),
 };
-
 
 export default requests;

@@ -1,5 +1,6 @@
 import { Col, Row } from "react-bootstrap";
-import RegisterLogin from "../components/Auth/RegisterLogin";
+import RegisterLogin from "../../components/Auth/RegisterLogin";
+
 
 const AuthPage = () => {
   return (

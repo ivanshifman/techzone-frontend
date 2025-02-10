@@ -4,8 +4,8 @@ import { FC, useContext, useEffect, useState } from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import { Context } from "../../context";
-import { Users } from "../../../services/user.service";
-import { ResponsePayload } from "../../../services/api";
+import { Users } from "../../services/user.service";
+import { ResponsePayload } from "../../services/api";
 import { useForm } from "react-hook-form";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
 
@@ -87,7 +87,7 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
       showSuccessToast(message);
     } catch (error: any) {
       const errorMessage =
-        error?.response?.data?.message ||
+        error?.response?.data?.errorResponse.message ||
         error?.message ||
         (Object.keys(errors).length > 0
           ? Object.values(errors)

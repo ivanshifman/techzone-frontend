@@ -1,11 +1,11 @@
-import "./globals.css";
+import "../styles/globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import { Provider } from "../context";
 import { Container } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
-import TopHead from "./components/shared/TopHead";
-import { Provider } from "./context";
-import Footer from "./components/shared/Footer";
+import TopHead from "../components/shared/TopHead";
+import Footer from "../components/shared/Footer";
 
 export const metadata = {
   title: "TechZone",

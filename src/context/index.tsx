@@ -1,16 +1,10 @@
 "use client";
 
 import { useReducer, createContext, useEffect } from "react";
-import requests from "../../services/api";
+import requests, { ResponsePayload } from "../services/api";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import {
-  Action,
-  ContextType,
-  CsrfTokenResponse,
-  Props,
-  State,
-} from "./context.types";
+import { Action, ContextType, Props, State } from "../types/context";
 
 const initialState: State = {
   user: null,
@@ -90,22 +84,24 @@ const Provider = ({ children }: Props) => {
       payload: storedCart ? JSON.parse(storedCart) : [],
     });
 
-    const getCsrfToken = async () => {
-      try {
-        const response = await requests.get<CsrfTokenResponse>("/csrf-token");
-        const csrfToken = response.result; 
+    // const getCsrfToken = async () => {
+    //   try {
+    //     const { success, message, result }: ResponsePayload = await requests.get("/csrf-token");
+    //     const csrfToken = result;
 
-        if (!csrfToken || typeof csrfToken !== "string") {
-          throw new Error("CSRF Token not found or invalid");
-        }
-        axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
-        
-        console.log("CSRF Token:", csrfToken);
-      } catch (error) {
-        console.error("Error fetching CSRF token:", error);
-      }
-    };
-    getCsrfToken();
+    //     if (!csrfToken || typeof csrfToken !== "string") {
+    //       throw new Error("CSRF Token not found or invalid");
+    //     }
+
+    //     axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
+
+    //     console.log("CSRF Token:", csrfToken);
+    //     console.log('CSRF Token', csrfToken, axios.defaults.headers);
+    //   } catch (error) {
+    //     console.error("Error fetching CSRF token:", error);
+    //   }
+    // };
+    // getCsrfToken();
   }, []);
 
   useEffect(() => {
