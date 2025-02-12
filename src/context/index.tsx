@@ -1,13 +1,14 @@
 "use client";
 
 import { useReducer, createContext, useEffect } from "react";
-import requests, { ResponsePayload } from "../services/api";
+import requests from "../services/api";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Action, ContextType, Props, State } from "../types/context";
 
 const initialState: State = {
   user: null,
+  token: null,
 };
 
 const initialContext: ContextType = {
@@ -22,11 +23,11 @@ const Context = createContext<ContextType>(initialContext);
 const rootReducer = (state: Record<string, any>, action: Action) => {
   switch (action.type) {
     case "LOGIN":
-      return { ...state, user: action.payload };
+      return { ...state, user: action.payload, token: action.payload?.token };
     case "LOGOUT":
-      return { ...state, user: null };
+      return { ...state, user: null, token: null };
     case "UPDATE_USER":
-      return { ...state, user: action.payload };
+      return { ...state, user: action.payload, token: action.payload?.token };
     default:
       return state;
   }
@@ -73,10 +74,16 @@ const Provider = ({ children }: Props) => {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("_tech_user");
-    dispatch({
-      type: "LOGIN",
-      payload: storedUser ? JSON.parse(storedUser) : null,
-    });
+    const storedToken = localStorage.getItem("_tech_token");
+    if (storedUser) {
+      dispatch({
+        type: "LOGIN",
+        payload: {
+          token: storedToken ? storedToken : null,
+          user: storedUser ? JSON.parse(storedUser) : null,
+        }
+      });
+    }
 
     const storedCart = localStorage.getItem("_tech_cart");
     cartDispatch({

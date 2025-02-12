@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from "axios";
 
-export interface ResponsePayload<T = any> {
+export interface ResponsePayload {
   success: boolean;
   message: string;
-  result: T;
+  result: any;
 }
 
 const api = axios.create({
@@ -20,19 +20,19 @@ api.interceptors.response.use(
 );
 
 const responseBody = <T>(
-  response: AxiosResponse<ResponsePayload<T>>
-): ResponsePayload<T> => response.data;
+  response: AxiosResponse<ResponsePayload>
+): ResponsePayload => response.data;
 
 const requests = {
-  get: <T>(url: string) => api.get<ResponsePayload<T>>(url).then(responseBody),
+  get: <T>(url: string) => api.get<ResponsePayload>(url).then(responseBody),
   post: <T>(url: string, body: any) =>
-    api.post<ResponsePayload<T>>(url, body).then(responseBody),
+    api.post<ResponsePayload>(url, body).then(responseBody),
   put: <T>(url: string, body: any) =>
-    api.put<ResponsePayload<T>>(url, body).then(responseBody),
+    api.put<ResponsePayload>(url, body).then(responseBody),
   patch: <T>(url: string, body: any) =>
-    api.patch<ResponsePayload<T>>(url, body).then(responseBody),
+    api.patch<ResponsePayload>(url, body).then(responseBody),
   delete: <T>(url: string) =>
-    api.delete<ResponsePayload<T>>(url).then(responseBody),
+    api.delete<ResponsePayload>(url).then(responseBody),
 };
 
 export default requests;

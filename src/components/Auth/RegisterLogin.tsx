@@ -32,10 +32,7 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
     defaultValues: { email: "", password: "", confirmPassword: "", name: "" },
   });
 
-  const {
-    state: { user },
-    dispatch,
-  } = useContext(Context);
+  const { state, dispatch } = useContext(Context);
 
   const [loading, setLoading] = useState({
     auth: false,
@@ -45,12 +42,16 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
   });
   const [otpTime, setOtpTime] = useState(false);
 
+  const user = state?.user?.user;
   const router = useRouter();
 
   useEffect(() => {
-    if (user?.email) {
+    if (user === undefined) return;
+    if (user && user?.email) {
       router.replace("/my-account");
     }
+    console.log(user);
+    console.log(state)
   }, [user?.email, router]);
 
   const getFieldValue = (field: keyof FormValues) => {
@@ -74,9 +75,10 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
         : await Users.loginUser(payload);
 
       if (!success) throw new Error(message);
+      console.log(result)
 
       if (!isRegisterForm) {
-        dispatch({ type: "LOGIN", payload: result?.user });
+        dispatch({ type: "LOGIN", payload: { user: result.user, token: result.token } });
         showSuccessToast(message);
         router.push("/");
       }
@@ -179,11 +181,11 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
       <Card.Body>
         <Form onSubmit={handleSubmit(onSubmit)}>
           {isRegisterForm && (
-            <Form.Group className="mb-3">
-              <Form.Label htmlFor="name">Full name</Form.Label>
+            <Form.Group className="mb-3" controlId="name">
+              <Form.Label>Full name</Form.Label>
               <Form.Control
                 type="text"
-                id="name"
+                
                 className="form-control-no-focus"
                 {...register("name", { required: "Name is required" })}
                 placeholder="Enter your full name"
@@ -197,11 +199,11 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
               )}
             </Form.Group>
           )}
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="email">Email address</Form.Label>
+          <Form.Group className="mb-3" controlId="email">
+            <Form.Label>Email address</Form.Label>
             <Form.Control
               type="email"
-              id="email"
+              
               className="form-control-no-focus"
               {...register("email", {
                 required: "Email is required",
@@ -220,11 +222,11 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
               </Form.Text>
             )}
           </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="password">Password</Form.Label>
+          <Form.Group className="mb-3" controlId="password">
+            <Form.Label>Password</Form.Label>
             <Form.Control
               type="password"
-              id="password"
+             
               className="form-control-no-focus"
               {...register("password", {
                 required: "Password is required",
@@ -245,13 +247,13 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
           </Form.Group>
           {isRegisterForm && (
             <>
-              <Form.Group className="mb-3">
-                <Form.Label htmlFor="confirmPassword">
+              <Form.Group className="mb-3" controlId="confirmPassword">
+                <Form.Label>
                   Re-type password
                 </Form.Label>
                 <Form.Control
                   type="password"
-                  id="confirmPassword"
+                  
                   className="form-control-no-focus"
                   {...register("confirmPassword", {
                     required: "Please confirm your password",
@@ -261,7 +263,7 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
                   })}
                   placeholder="Re-type your password"
                   disabled={otpTime}
-                  autoComplete="new-password"
+                  autoComplete="re-type-password"
                 />
                 {errors.confirmPassword && (
                   <Form.Text className="text-danger mx-2">
@@ -270,11 +272,11 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
                 )}
               </Form.Group>
               {otpTime && (
-                <Form.Group className="mb-3">
-                  <Form.Label htmlFor="otp">OTP</Form.Label>
+                <Form.Group className="mb-3" controlId="otp">
+                  <Form.Label>OTP</Form.Label>
                   <Form.Control
                     type="text"
-                    id="otp"
+                    
                     className="form-control-no-focus"
                     {...register("otp")}
                     placeholder="OTP"

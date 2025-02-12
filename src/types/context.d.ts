@@ -4,6 +4,7 @@ export type Props = {
 
 export type State = {
   user: any | null;
+  token: any | null;
 };
 
 export type Action = {

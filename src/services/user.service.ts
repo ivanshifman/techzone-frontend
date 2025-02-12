@@ -17,8 +17,12 @@ export const Users = {
     );
     window.localStorage.setItem(
       "_tech_user",
-      JSON.stringify(loginUserRes.result?.result?.user || {})
+      JSON.stringify(loginUserRes.result?.user || {})
     );
+    window.localStorage.setItem(
+      "_tech_token",
+      JSON.stringify(loginUserRes.result?.token || {})
+    )
     return loginUserRes;
   },
 
