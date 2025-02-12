@@ -34,8 +34,12 @@ export const Users = {
     const userData = JSON.parse(
       window.localStorage.getItem("_tech_user") || "{}"
     );
+    const tokenData = JSON.parse(
+      window.localStorage.getItem("_tech_token") || "{}"
+    )
     userData.name = user?.name;
     window.localStorage.setItem("_tech_user", JSON.stringify(userData));
+    window.localStorage.setItem("_tech_token", JSON.stringify(tokenData));
     return updateUserRes;
   },
 
@@ -54,6 +58,7 @@ export const Users = {
       {}
     );
     window.localStorage.removeItem("_tech_user");
+    window.localStorage.removeItem("_tech_token");
     return logoutUserRes;
   },
 };

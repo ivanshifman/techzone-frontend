@@ -16,8 +16,8 @@ import AccountDetails from "../../components/MyAccount/AccountDetails";
 const MyAccountPage = () => {
   const { state, dispatch } = useContext(Context);
 
-  const user = state?.user?.user;
-  const token = state?.user?.token;
+  const user = state?.user;
+  const token = state?.token;
 
   console.log("token", token);
   const router = useRouter();

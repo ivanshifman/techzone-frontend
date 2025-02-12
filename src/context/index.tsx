@@ -23,11 +23,19 @@ const Context = createContext<ContextType>(initialContext);
 const rootReducer = (state: Record<string, any>, action: Action) => {
   switch (action.type) {
     case "LOGIN":
-      return { ...state, user: action.payload, token: action.payload?.token };
+      return {
+        ...state,
+        user: action.payload?.user,
+        token: action.payload?.token,
+      };
     case "LOGOUT":
       return { ...state, user: null, token: null };
     case "UPDATE_USER":
-      return { ...state, user: action.payload, token: action.payload?.token };
+      return {
+        ...state,
+        user: action.payload?.user,
+        token: action.payload?.token,
+      };
     default:
       return state;
   }
@@ -75,13 +83,13 @@ const Provider = ({ children }: Props) => {
   useEffect(() => {
     const storedUser = localStorage.getItem("_tech_user");
     const storedToken = localStorage.getItem("_tech_token");
-    if (storedUser) {
+    if (storedUser && storedToken) {
       dispatch({
         type: "LOGIN",
         payload: {
           token: storedToken ? storedToken : null,
           user: storedUser ? JSON.parse(storedUser) : null,
-        }
+        },
       });
     }
 

@@ -42,7 +42,7 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
   });
   const [otpTime, setOtpTime] = useState(false);
 
-  const user = state?.user?.user;
+  const user = state?.user;
   const router = useRouter();
 
   useEffect(() => {
@@ -50,8 +50,8 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
     if (user && user?.email) {
       router.replace("/my-account");
     }
-    console.log(user);
-    console.log(state)
+    console.log("user",user);
+    console.log("state",state)
   }, [user?.email, router]);
 
   const getFieldValue = (field: keyof FormValues) => {
@@ -75,7 +75,7 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
         : await Users.loginUser(payload);
 
       if (!success) throw new Error(message);
-      console.log(result)
+      console.log("res", result)
 
       if (!isRegisterForm) {
         dispatch({ type: "LOGIN", payload: { user: result.user, token: result.token } });

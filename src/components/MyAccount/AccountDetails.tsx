@@ -33,7 +33,7 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
   token,
 }) => {
   const decodedToken = jwtDecode<CustomJwtPayload>(token);
-  console.log(decodedToken);
+  console.log("decodedToken", decodedToken);
   const {
     register,
     handleSubmit,
