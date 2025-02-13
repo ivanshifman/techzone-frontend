@@ -1,17 +1,15 @@
 "use client";
 
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { Context } from "../../context";
 import { Users } from "../../services/user.service";
 import { ResponsePayload } from "../../services/api";
-import { Nav, Tab } from "react-bootstrap";
-import { Col, Row } from "react-bootstrap";
-// import StarRatingComponent from 'react-star-rating-component';
-// import AllOrders from '../components/MyAccount/AllOrders';
+import { Col, Nav, Row, Tab } from "react-bootstrap";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import ProtectedRoute from "../../components/shared/ProtectedRoute";
 import AccountDetails from "../../components/MyAccount/AccountDetails";
+// import AllOrders from '../components/MyAccount/AllOrders';
 
 const MyAccountPage = () => {
   const { state, dispatch } = useContext(Context);
@@ -22,7 +20,7 @@ const MyAccountPage = () => {
   console.log("token", token);
   const router = useRouter();
 
-  const logoutHandler = async () => {
+  const logoutHandler = useCallback(async () => {
     try {
       dispatch({
         type: "LOGOUT",
@@ -39,7 +37,7 @@ const MyAccountPage = () => {
         error.response?.data?.errorResponse.message || error.message
       );
     }
-  };
+  }, [router]);
 
   return (
     <ProtectedRoute>
@@ -68,7 +66,12 @@ const MyAccountPage = () => {
           <Col sm={9}>
             <Tab.Content>
               <Tab.Pane eventKey="first">
-                <AccountDetails user={user} dispatch={dispatch} token={token} />
+                <AccountDetails
+                  user={user}
+                  dispatch={dispatch}
+                  token={token}
+                  state={state}
+                />
               </Tab.Pane>
               <Tab.Pane eventKey="second">{/* <AllOrders /> */}</Tab.Pane>
             </Tab.Content>

@@ -11,6 +11,7 @@ interface IAccountDetailsProps {
   user: Record<string, any>;
   dispatch: any;
   token: any;
+  state: any;
 }
 
 interface CustomJwtPayload {
@@ -31,6 +32,7 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
   user,
   dispatch,
   token,
+  state,
 }) => {
   const decodedToken = jwtDecode<CustomJwtPayload>(token);
   console.log("decodedToken", decodedToken);
@@ -40,6 +42,7 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
     formState: { errors },
     getValues,
     reset,
+    watch,
   } = useForm<FormValues>({
     defaultValues: {
       name: user.name || "",
@@ -68,11 +71,14 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
 
       dispatch({
         type: "UPDATE_USER",
-        payload: { user: result.user, token: result.token },
+        payload: {
+          user: result.user || state.user,
+          token: result.token || state.token,
+        },
       });
 
       reset({
-        name: result.name,
+        name: result?.name ?? "",
         oldPassword: "",
         newPassword: "",
         confirmPassword: "",
@@ -113,6 +119,7 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
               type="email"
               placeholder="name@example.com"
               disabled={true}
+              readOnly
               value={user?.email}
               autoComplete="email"
             />
@@ -123,9 +130,7 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
               type="password"
               className="form-control-no-focus"
               {...register("oldPassword", {
-                required: getValues("newPassword")
-                  ? "Password is required"
-                  : false,
+                required: watch("newPassword") ? "Password is required" : false,
                 minLength: {
                   value: 6,
                   message: "Password must be at least 6 characters",
@@ -146,9 +151,7 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
               type="password"
               className="form-control-no-focus"
               {...register("newPassword", {
-                required: getValues("oldPassword")
-                  ? "Password is required"
-                  : false,
+                required: watch("oldPassword") ? "Password is required" : false,
                 minLength: {
                   value: 6,
                   message: "Password must be at least 6 characters",
@@ -169,9 +172,7 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
               type="password"
               className="form-control-no-focus"
               {...register("confirmPassword", {
-                required: getValues("newPassword")
-                  ? "Please confirm your password"
-                  : false,
+                required: watch("newPassword") ? "Password is required" : false,
                 validate: (value) =>
                   value === getValues("newPassword") ||
                   "Passwords do not match",

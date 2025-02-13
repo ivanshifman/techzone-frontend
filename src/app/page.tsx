@@ -1,95 +1,100 @@
-import Image from "next/image";
-import styles from "../styles/page.module.css";
+"use client";
 
-export default function Home() {
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import { Button } from "react-bootstrap";
+import styles from "../styles/Home.module.css";
+import axios from "axios";
+import ProductItem from "../components/Products/ProductItem";
+import { showErrorToast } from "../utils/toast";
+
+const Home = () => {
+  const router = useRouter();
+  const [products, setProducts] = useState<any>({
+    latestProducts: [],
+    topSoldProducts: [],
+  });
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const baseUrl =
+          process.env.NODE_ENV !== "production"
+            ? process.env.NEXT_PUBLIC_BASE_API_URL_LOCAL
+            : process.env.NEXT_PUBLIC_BASE_API_URL;
+
+        const { data } = await axios.get(`${baseUrl}/products?homePage=true`);
+        setProducts(data?.result[0] || {});
+      } catch (error) {
+        showErrorToast("Error fetching products");
+        console.error("Error fetching products", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  console.log("products", products);
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+    <>
+      <h3 className={styles.productCats}>Latest Products</h3>
+      {products.latestProducts ? (
+        <Row xs={1} md={2} lg={4} className="g-4 my-4">
+          {products.latestProducts.map(
+            (product: any, index: React.Key | null | undefined) => (
+              <ProductItem
+                product={product}
+                userType={"customer"}
+                key={index}
+              />
+            )
+          )}
+        </Row>
+      ) : (
+        <div className="flex justify-content-center align-content-center p-5">
+          <p className="text-center fs-1 text-danger fw-bold">
+            No products found.
+          </p>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      )}
+      <hr />
+      <h3 className={styles.productCats}>Top Rated Products</h3>
+      {products.topRatedProducts ? (
+        <>
+          <Row xs={1} md={2} lg={4} className="g-4 my-4">
+            {products.topRatedProducts.map(
+              (product: any, index: React.Key | null | undefined) => (
+                <ProductItem
+                  key={index}
+                  product={product}
+                  userType="customer"
+                />
+              )
+            )}
+          </Row>
+          <Row>
+            <Col>
+              <Button
+                variant="primary"
+                className={styles.viewMoreBtn}
+                onClick={() => router.push("/products")}
+              >
+                View More
+              </Button>
+            </Col>
+          </Row>
+        </>
+      ) : (
+        <div className="flex justify-content-center align-content-center p-5">
+          <p className="text-center fs-1 text-danger fw-bold">
+            No top-rated products available at the moment.
+          </p>
+        </div>
+      )}
+    </>
   );
-}
+};
+
+export default Home;
