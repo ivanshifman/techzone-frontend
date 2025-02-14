@@ -4,23 +4,28 @@ import { useReducer, createContext, useEffect } from "react";
 import requests from "../services/api";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { Action, ContextType, Props, State } from "../types/context.types";
+import {
+  Action,
+  CartAction,
+  CartItem,
+  ContextType,
+  Props,
+  State,
+} from "../types/context.types";
 
 const initialState: State = {
   user: null,
   token: null,
 };
 
-const initialContext: ContextType = {
+const Context = createContext<ContextType>({
   state: initialState,
   dispatch: () => {},
   cartItems: [],
   cartDispatch: () => {},
-};
+});
 
-const Context = createContext<ContextType>(initialContext);
-
-const rootReducer = (state: Record<string, any>, action: Action) => {
+const rootReducer = (state: State, action: Action) => {
   switch (action.type) {
     case "LOGIN":
       return {
@@ -41,13 +46,13 @@ const rootReducer = (state: Record<string, any>, action: Action) => {
   }
 };
 
-const cartReducer = (state: any, action: Action) => {
+const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
   switch (action.type) {
-    case "ADD_TO_CART":
+    case "ADD_ITEM":
       const cartItems = [...state, action.payload];
       window.localStorage.setItem("_tech_cart", JSON.stringify(cartItems));
       return cartItems;
-    case "REMOVE_FROM_CART":
+    case "REMOVE_ITEM":
       const newCartItems = state.filter(
         (item: { skuId: string }) => item.skuId !== action.payload?.skuId
       );
@@ -133,7 +138,7 @@ const Provider = ({ children }: Props) => {
               .put("/users/logout", {})
               .then(() => {
                 console.log("/401 error > logout");
-                dispatch({ type: "LOGOUT", payload: undefined });
+                dispatch({ type: "LOGOUT" });
                 localStorage.removeItem("_tech_user");
                 router.push("/auth");
               })

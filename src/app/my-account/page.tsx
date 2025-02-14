@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useContext } from "react";
+import { useContext } from "react";
 import { useRouter } from "next/navigation";
 import { Context } from "../../context";
 import { Users } from "../../services/user.service";
@@ -20,11 +20,10 @@ const MyAccountPage = () => {
   console.log("token", token);
   const router = useRouter();
 
-  const logoutHandler = useCallback(async () => {
+  const logoutHandler = async () => {
     try {
       dispatch({
-        type: "LOGOUT",
-        payload: undefined,
+        type: "LOGOUT"
       });
       const { success, message }: ResponsePayload = await Users.logoutUser();
       if (!success) throw new Error(message);
@@ -37,7 +36,7 @@ const MyAccountPage = () => {
         error.response?.data?.errorResponse.message || error.message
       );
     }
-  }, [router, dispatch]);
+  };
 
   return (
     <ProtectedRoute>

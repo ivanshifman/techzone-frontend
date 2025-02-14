@@ -18,7 +18,8 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
   token,
   state,
 }) => {
-  const decodedToken = jwtDecode<CustomJwtPayload>(token);
+  const decodedToken = token ? jwtDecode<CustomJwtPayload>(token) : null;
+
   console.log("decodedToken", decodedToken);
   const {
     register,
@@ -29,7 +30,7 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
     watch,
   } = useForm<FormValues>({
     defaultValues: {
-      name: user.name || "",
+      name: user?.name || "",
       oldPassword: "",
       newPassword: "",
       confirmPassword: "",
@@ -40,6 +41,11 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
 
   const updateUserAccount = async (data: FormValues) => {
     try {
+      if (!decodedToken?.id) {
+        showErrorToast("User ID is missing.");
+        return;
+      }
+
       const { name, oldPassword, newPassword } = data;
       setIsLoading(true);
 
@@ -51,6 +57,7 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
 
       const { success, message, result }: ResponsePayload =
         await Users.updateUser(payload, decodedToken?.id);
+
       if (!success) throw new Error(message);
 
       dispatch({

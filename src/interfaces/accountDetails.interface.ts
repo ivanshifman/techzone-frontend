@@ -1,8 +1,10 @@
+import { Action, State, User } from "../types/context.types";
+
 export interface IAccountDetailsProps {
-  user: Record<string, any>;
-  dispatch: any;
-  token: any;
-  state: any;
+  user: User;
+  dispatch: React.Dispatch<Action>;
+  token: string | null;
+  state: State;
 }
 
 export interface FormValues {

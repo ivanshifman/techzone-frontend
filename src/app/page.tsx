@@ -8,9 +8,11 @@ import { Button, Col, Row } from "react-bootstrap";
 import { showErrorToast } from "../utils/toast";
 import styles from "../styles/Home.module.css";
 import ProductItem from "../components/Products/ProductItem";
+import Loading from "../components/shared/Loading";
 
 const Home = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<{
     latestProducts: Product[];
     topRatedProducts: Product[];
@@ -22,16 +24,21 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setLoading(true);
         const baseUrl =
           process.env.NODE_ENV !== "production"
             ? process.env.NEXT_PUBLIC_BASE_API_URL_LOCAL
             : process.env.NEXT_PUBLIC_BASE_API_URL;
 
         const { data } = await axios.get(`${baseUrl}/products?homePage=true`);
-        setProducts(data?.result[0] || {});
+        setProducts(
+          data?.result[0] || { latestProducts: [], topRatedProducts: [] }
+        );
       } catch (error) {
         showErrorToast("Error fetching products");
         console.error("Error fetching products", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -39,6 +46,11 @@ const Home = () => {
   }, []);
 
   console.log("products", products);
+
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <>
       <h3 className={styles.productCats}>Latest Products</h3>
