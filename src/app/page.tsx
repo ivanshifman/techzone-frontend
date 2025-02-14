@@ -2,19 +2,21 @@
 
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import { Button } from "react-bootstrap";
-import styles from "../styles/Home.module.css";
 import axios from "axios";
-import ProductItem from "../components/Products/ProductItem";
+import { Product } from "../interfaces/products.interface";
+import { Button, Col, Row } from "react-bootstrap";
 import { showErrorToast } from "../utils/toast";
+import styles from "../styles/Home.module.css";
+import ProductItem from "../components/Products/ProductItem";
 
 const Home = () => {
   const router = useRouter();
-  const [products, setProducts] = useState<any>({
+  const [products, setProducts] = useState<{
+    latestProducts: Product[];
+    topRatedProducts: Product[];
+  }>({
     latestProducts: [],
-    topSoldProducts: [],
+    topRatedProducts: [],
   });
 
   useEffect(() => {
@@ -40,10 +42,10 @@ const Home = () => {
   return (
     <>
       <h3 className={styles.productCats}>Latest Products</h3>
-      {products.latestProducts ? (
+      {products.latestProducts.length > 0 ? (
         <Row xs={1} md={2} lg={4} className="g-4 my-4">
           {products.latestProducts.map(
-            (product: any, index: React.Key | null | undefined) => (
+            (product: Product, index: React.Key | null | undefined) => (
               <ProductItem
                 product={product}
                 userType={"customer"}
@@ -61,11 +63,11 @@ const Home = () => {
       )}
       <hr />
       <h3 className={styles.productCats}>Top Rated Products</h3>
-      {products.topRatedProducts ? (
+      {products.topRatedProducts.length > 0 ? (
         <>
           <Row xs={1} md={2} lg={4} className="g-4 my-4">
             {products.topRatedProducts.map(
-              (product: any, index: React.Key | null | undefined) => (
+              (product: Product, index: React.Key | null | undefined) => (
                 <ProductItem
                   key={index}
                   product={product}

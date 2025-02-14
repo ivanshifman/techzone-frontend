@@ -4,7 +4,7 @@ import { useReducer, createContext, useEffect } from "react";
 import requests from "../services/api";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { Action, ContextType, Props, State } from "../types/context";
+import { Action, ContextType, Props, State } from "../types/context.types";
 
 const initialState: State = {
   user: null,

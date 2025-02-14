@@ -22,7 +22,7 @@ export const Users = {
     window.localStorage.setItem(
       "_tech_token",
       JSON.stringify(loginUserRes.result?.token || {})
-    )
+    );
     return loginUserRes;
   },
 
@@ -36,7 +36,7 @@ export const Users = {
     );
     const tokenData = JSON.parse(
       window.localStorage.getItem("_tech_token") || "{}"
-    )
+    );
     userData.name = user?.name;
     window.localStorage.setItem("_tech_user", JSON.stringify(userData));
     window.localStorage.setItem("_tech_token", JSON.stringify(tokenData));

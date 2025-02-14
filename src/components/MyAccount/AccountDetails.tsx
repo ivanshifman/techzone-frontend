@@ -3,30 +3,14 @@ import { Button } from "react-bootstrap";
 import { Card, Form } from "react-bootstrap";
 import { Users } from "../../services/user.service";
 import { ResponsePayload } from "../../services/api";
+import {
+  FormValues,
+  IAccountDetailsProps,
+} from "../../interfaces/accountDetails.interface";
+import { CustomJwtPayload } from "../../interfaces/jwtPayload.interface";
+import { jwtDecode } from "jwt-decode";
 import { useForm } from "react-hook-form";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
-import { jwtDecode } from "jwt-decode";
-
-interface IAccountDetailsProps {
-  user: Record<string, any>;
-  dispatch: any;
-  token: any;
-  state: any;
-}
-
-interface CustomJwtPayload {
-  id: string;
-  type: string;
-  iat: number;
-  exp: number;
-}
-
-interface FormValues {
-  name: string;
-  oldPassword: string;
-  newPassword: string;
-  confirmPassword: string;
-}
 
 const AccountDetails: FC<IAccountDetailsProps> = ({
   user,
@@ -72,13 +56,13 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
       dispatch({
         type: "UPDATE_USER",
         payload: {
-          user: result.user || state.user,
+          user: { ...state.user, ...result },
           token: result.token || state.token,
         },
       });
 
       reset({
-        name: result?.name ?? "",
+        name: result.name ?? "",
         oldPassword: "",
         newPassword: "",
         confirmPassword: "",
@@ -93,6 +77,10 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
       setIsLoading(false);
     }
   };
+
+  const newPasswordValue = watch("newPassword");
+  const oldPasswordValue = watch("oldPassword");
+
   return (
     <Card className="mt-3">
       <Card.Header>Register</Card.Header>
@@ -130,7 +118,7 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
               type="password"
               className="form-control-no-focus"
               {...register("oldPassword", {
-                required: watch("newPassword") ? "Password is required" : false,
+                required: newPasswordValue ? "Password is required" : false,
                 minLength: {
                   value: 6,
                   message: "Password must be at least 6 characters",
@@ -151,7 +139,7 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
               type="password"
               className="form-control-no-focus"
               {...register("newPassword", {
-                required: watch("oldPassword") ? "Password is required" : false,
+                required: oldPasswordValue ? "Password is required" : false,
                 minLength: {
                   value: 6,
                   message: "Password must be at least 6 characters",
@@ -172,7 +160,7 @@ const AccountDetails: FC<IAccountDetailsProps> = ({
               type="password"
               className="form-control-no-focus"
               {...register("confirmPassword", {
-                required: watch("newPassword") ? "Password is required" : false,
+                required: newPasswordValue ? "Password is required" : false,
                 validate: (value) =>
                   value === getValues("newPassword") ||
                   "Passwords do not match",

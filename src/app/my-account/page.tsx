@@ -37,7 +37,7 @@ const MyAccountPage = () => {
         error.response?.data?.errorResponse.message || error.message
       );
     }
-  }, [router]);
+  }, [router, dispatch]);
 
   return (
     <ProtectedRoute>
@@ -51,11 +51,6 @@ const MyAccountPage = () => {
               <Nav.Item>
                 <Nav.Link eventKey="second">All Orders</Nav.Link>
               </Nav.Item>
-              {/* <Nav.Item>
-							<Nav.Link eventKey='third'>
-								Support tickets
-							</Nav.Link>
-						</Nav.Item> */}
               <Nav.Item>
                 <Nav.Link eventKey="third" onClick={logoutHandler}>
                   Logout

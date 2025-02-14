@@ -4,13 +4,10 @@ import { useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Context } from "../../context";
 
-
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const {
-    state,
-  } = useContext(Context);
+  const { state } = useContext(Context);
 
-  const user = state?.user
+  const user = state?.user;
   const router = useRouter();
 
   useEffect(() => {

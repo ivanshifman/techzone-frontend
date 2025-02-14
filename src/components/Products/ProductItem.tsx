@@ -7,16 +7,16 @@ import { Button, Card, Col, Badge } from "react-bootstrap";
 import { Eye, Pen, Trash, Upload } from "react-bootstrap-icons";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import { Rating } from "react-simple-star-rating";
-
-interface IProductItemProps {
-  userType: string;
-  product: Record<string, any>;
-}
+import { SkuDetail } from "../../interfaces/products.interface";
+import { IProductItemProps } from "../../interfaces/productItem.interface";
 
 const ProductItem: FC<IProductItemProps> = ({ userType, product }) => {
+  const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const router = useRouter();
+  const [image, setImage] = useState(product?.image);
+
   const deleteProduct = async () => {
     try {
       setIsLoading(true);
@@ -51,10 +51,11 @@ const ProductItem: FC<IProductItemProps> = ({ userType, product }) => {
         product._id,
         formData
       );
-      if (success) {
+      if (!success) {
         throw new Error(message);
       }
-      product.image = result;
+
+      setImage(result);
       showSuccessToast(message);
     } catch (error: any) {
       showErrorToast(
@@ -72,9 +73,7 @@ const ProductItem: FC<IProductItemProps> = ({ userType, product }) => {
           onClick={() => router.push(`/products/${product?._id}`)}
           variant="top"
           src={
-            uploading
-              ? "https://www.ebi.ac.uk/training/progressbar.gif"
-              : product?.image
+            uploading ? "https://www.ebi.ac.uk/training/progressbar.gif" : image
           }
         />
         <Card.Body>
@@ -108,8 +107,8 @@ const ProductItem: FC<IProductItemProps> = ({ userType, product }) => {
             product?.skuDetails?.length > 0 &&
             product?.skuDetails
               .sort(
-                (a: { validity: number }, b: { validity: number }) =>
-                  a.validity - b.validity
+                (a: SkuDetail, b: SkuDetail) =>
+                  (a.validity ?? 0) - (b.validity ?? 0)
               )
               .map((sku: Record<string, any>, key: any) => (
                 <Badge bg="warning" text="dark" className="skuBtn" key={key}>
@@ -162,8 +161,7 @@ const ProductItem: FC<IProductItemProps> = ({ userType, product }) => {
               href={`/products/${product?._id}`}
               className="btn btn-outline-dark viewProdBtn"
             >
-              <Eye />
-              View Details
+              <Eye /> View details
             </Link>
           )}
         </Card.Body>

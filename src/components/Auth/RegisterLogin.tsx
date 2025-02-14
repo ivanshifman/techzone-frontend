@@ -6,20 +6,12 @@ import { useRouter } from "next/navigation";
 import { Context } from "../../context";
 import { Users } from "../../services/user.service";
 import { ResponsePayload } from "../../services/api";
+import {
+  FormValues,
+  IRegisterLoginProps,
+} from "../../interfaces/registerLogin.interface";
 import { useForm } from "react-hook-form";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
-
-interface IRegisterLoginProps {
-  isRegisterForm?: boolean;
-}
-
-interface FormValues {
-  name?: string;
-  email?: string;
-  password?: string;
-  confirmPassword?: string;
-  otp?: string;
-}
 
 const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
   const {
@@ -50,8 +42,8 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
     if (user && user?.email) {
       router.replace("/my-account");
     }
-    console.log("user",user);
-    console.log("state",state)
+    console.log("user", user);
+    console.log("state", state);
   }, [user?.email, router]);
 
   const getFieldValue = (field: keyof FormValues) => {
@@ -75,10 +67,13 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
         : await Users.loginUser(payload);
 
       if (!success) throw new Error(message);
-      console.log("res", result)
+      console.log("res", result);
 
       if (!isRegisterForm) {
-        dispatch({ type: "LOGIN", payload: { user: result.user, token: result.token } });
+        dispatch({
+          type: "LOGIN",
+          payload: { user: result.user, token: result.token },
+        });
         showSuccessToast(message);
         router.push("/");
       }
@@ -185,7 +180,6 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
               <Form.Label>Full name</Form.Label>
               <Form.Control
                 type="text"
-                
                 className="form-control-no-focus"
                 {...register("name", { required: "Name is required" })}
                 placeholder="Enter your full name"
@@ -203,7 +197,6 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
             <Form.Label>Email address</Form.Label>
             <Form.Control
               type="email"
-              
               className="form-control-no-focus"
               {...register("email", {
                 required: "Email is required",
@@ -226,7 +219,6 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
             <Form.Label>Password</Form.Label>
             <Form.Control
               type="password"
-             
               className="form-control-no-focus"
               {...register("password", {
                 required: "Password is required",
@@ -248,12 +240,9 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
           {isRegisterForm && (
             <>
               <Form.Group className="mb-3" controlId="confirmPassword">
-                <Form.Label>
-                  Re-type password
-                </Form.Label>
+                <Form.Label>Re-type password</Form.Label>
                 <Form.Control
                   type="password"
-                  
                   className="form-control-no-focus"
                   {...register("confirmPassword", {
                     required: "Please confirm your password",
@@ -276,7 +265,6 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
                   <Form.Label>OTP</Form.Label>
                   <Form.Control
                     type="text"
-                    
                     className="form-control-no-focus"
                     {...register("otp")}
                     placeholder="OTP"
