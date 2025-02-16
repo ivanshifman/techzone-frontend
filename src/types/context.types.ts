@@ -5,6 +5,7 @@ export type Props = {
 export type User = {
   name: string;
   email: string;
+  type: string;
 } | null;
 
 export type Token = string | null;

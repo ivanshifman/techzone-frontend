@@ -5,7 +5,6 @@ export interface ResponsePayload {
   message: string;
   result: any;
 }
-
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_API_URL,
   withCredentials: true,
@@ -25,6 +24,8 @@ const responseBody = <T>(
 
 const requests = {
   get: <T>(url: string) => api.get<ResponsePayload>(url).then(responseBody),
+  getSignal: <T>(url: string, signal: AbortSignal) =>
+    api.get<ResponsePayload>(url, { signal }).then(responseBody),
   post: <T>(url: string, body: any) =>
     api.post<ResponsePayload>(url, body).then(responseBody),
   put: <T>(url: string, body: any) =>

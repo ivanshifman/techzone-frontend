@@ -18,23 +18,22 @@ import { PersonCircle, Search } from "react-bootstrap-icons";
 import styles from "../../styles/Home.module.css";
 
 const TopHead = () => {
+  const { state, cartItems } = useContext(Context);
+
   const [searchText, setSearchText] = useState("");
   const [baseType, setBaseType] = useState("Applications");
   const [total, setTotal] = useState(0);
   const [itemCount, setItemCount] = useState(0);
 
-  const {
-    state: { user },
-    cartItems,
-  } = useContext(Context);
-
   const router = useRouter();
+  const user = state?.user;
 
   const navigateTo = (path: string) => router.push(path);
 
   const handleSearch = () => {
     if (searchText.trim()) {
       navigateTo(`/products?search=${searchText}`);
+      setSearchText("");
     }
   };
 

@@ -63,3 +63,10 @@ export interface Product {
   updatedAt: string;
   avgRating?: number;
 }
+
+export interface MetadataProducts {
+  skip: number;
+  limit: number;
+  total: number;
+  pages: number;
+}

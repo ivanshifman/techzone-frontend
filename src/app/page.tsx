@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Product } from "../interfaces/products.interface";
 import { Button, Col, Row } from "react-bootstrap";
@@ -9,9 +9,11 @@ import { showErrorToast } from "../utils/toast";
 import styles from "../styles/Home.module.css";
 import ProductItem from "../components/Products/ProductItem";
 import Loading from "../components/shared/Loading";
+import { Context } from "../context";
 
 const Home = () => {
-  const router = useRouter();
+  const { state } = useContext(Context);
+  
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<{
     latestProducts: Product[];
@@ -21,28 +23,40 @@ const Home = () => {
     topRatedProducts: [],
   });
 
+  const userType = state?.user?.type;
+  const router = useRouter();
+
   useEffect(() => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
     const fetchProducts = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
         const baseUrl =
           process.env.NODE_ENV !== "production"
             ? process.env.NEXT_PUBLIC_BASE_API_URL_LOCAL
             : process.env.NEXT_PUBLIC_BASE_API_URL;
 
-        const { data } = await axios.get(`${baseUrl}/products?homePage=true`);
+        const { data } = await axios.get(`${baseUrl}/products?homePage=true`, {
+          signal,
+        });
         setProducts(
           data?.result[0] || { latestProducts: [], topRatedProducts: [] }
         );
-      } catch (error) {
-        showErrorToast("Error fetching products");
-        console.error("Error fetching products", error);
+      } catch (error: any) {
+        if (!axios.isCancel(error)) {
+          showErrorToast(
+            error?.response?.data?.errorResponse.message || error?.message
+          );
+          console.error("Error fetching products", error);
+        }
       } finally {
-        setLoading(false);
+        !signal.aborted && setLoading(false);
       }
     };
 
     fetchProducts();
+    return () => abortController.abort();
   }, []);
 
   console.log("products", products);
@@ -60,7 +74,7 @@ const Home = () => {
             (product: Product, index: React.Key | null | undefined) => (
               <ProductItem
                 product={product}
-                userType={"customer"}
+                userType={userType || "customer"}
                 key={index}
               />
             )
@@ -83,7 +97,7 @@ const Home = () => {
                 <ProductItem
                   key={index}
                   product={product}
-                  userType="customer"
+                  userType={userType || "customer"}
                 />
               )
             )}

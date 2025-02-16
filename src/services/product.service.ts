@@ -4,13 +4,17 @@ import queryString from "query-string";
 export const Products = {
   getProducts: async (
     filter: Record<string, any>,
-    serverSide: boolean = false
+    serverSide: boolean = false,
+    signal?: AbortSignal
   ): Promise<ResponsePayload> => {
     const url = queryString.stringifyUrl({
       url: serverSide ? "" : "/products",
       query: filter,
     });
-    const getProductRes = await requests.get<ResponsePayload>(url);
+    
+    const getProductRes = signal
+    ? await requests.getSignal<ResponsePayload>(url, signal)
+    : await requests.get<ResponsePayload>(url);
     return getProductRes;
   },
 
