@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
-import { Context } from "../../context/index";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useAppContext } from "../../context/index";
 import {
   Badge,
   Button,
@@ -16,17 +16,22 @@ import {
 } from "react-bootstrap";
 import { PersonCircle, Search } from "react-bootstrap-icons";
 import styles from "../../styles/Home.module.css";
+import { useProducts } from "../Hooks/useProducts";
 
 const TopHead = () => {
-  const { state, cartItems } = useContext(Context);
+  const { state, cartItems } = useAppContext();
+  const { uniqueBasesTypes } = useProducts();
 
   const [searchText, setSearchText] = useState("");
   const [baseType, setBaseType] = useState("Applications");
   const [total, setTotal] = useState(0);
   const [itemCount, setItemCount] = useState(0);
 
-  const router = useRouter();
   const user = state?.user;
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  
 
   const navigateTo = (path: string) => router.push(path);
 
@@ -49,6 +54,15 @@ const TopHead = () => {
         : navigateTo(`/products?baseType=${type}`);
     }
   };
+
+  useEffect(() => {
+    const queryBaseType = searchParams.get("baseType");
+    if (queryBaseType && queryBaseType !== baseType) {
+      setBaseType(queryBaseType);
+    } else if (!queryBaseType) {
+      setBaseType("Applications");
+    }
+  }, [pathname, searchParams]);
 
   useEffect(() => {
     setTotal(
@@ -104,7 +118,7 @@ const TopHead = () => {
           <Nav className="me-auto">
             <Nav.Link onClick={() => navigateTo("/")}>Home</Nav.Link>
             <NavDropdown title={baseType} id="collasible-nav-dropdown">
-              {["Computer", "Mobile", "Applications"].map((type) => (
+              {uniqueBasesTypes.map((type) => (
                 <NavDropdown.Item
                   key={type}
                   eventKey={type}

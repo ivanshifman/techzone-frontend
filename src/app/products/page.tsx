@@ -2,32 +2,30 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useContext, useEffect, useMemo, useState } from "react";
-import { Products } from "../../services/product.service";
-import { Context } from "../../context";
+import { useEffect, useState } from "react";
+import { useAppContext } from "../../context";
+import { useProducts } from "../../components/Hooks/useProducts";
 import { Col, Dropdown, DropdownButton, Row } from "react-bootstrap";
 import { PlusCircle } from "react-bootstrap-icons";
-// import styles from "../../styles/Product.module.css";
 import BreadcrumbDisplay from "../../components/shared/BreadcrumbDisplay";
 import PaginationDisplay from "../../components/shared/PaginationDisplay";
 import ProductFilter from "../../components/Products/ProductFilter";
 import ProductItem from "../../components/Products/ProductItem";
-import { MetadataProducts, Product } from "../../interfaces/products.interface";
-import { showErrorToast } from "../../utils/toast";
+import { Product } from "../../interfaces/products.interface";
 import Loading from "../../components/shared/Loading";
 
 const AllProducts = () => {
-  const { state } = useContext(Context);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [metadata, setMetadata] = useState<MetadataProducts>({
-    skip: 0,
-    limit: 0,
-    total: 0,
-    pages: 0,
-  });
+  const { state } = useAppContext();
+  const {
+    products,
+    metadata,
+    loading,
+    uniqueCategories,
+    uniquePlatformsTypes,
+  } = useProducts();
+
   const [userType, setUserType] = useState("customer");
   const [sortText, setSortText] = useState("Sort by");
-  const [loading, setLoading] = useState(true);
 
   const user = state?.user;
   const router = useRouter();
@@ -38,56 +36,7 @@ const AllProducts = () => {
     if (user?.type && user.type !== userType) {
       setUserType(user.type);
     }
-  }, [user?.type]);
-
-  const queryParams = useMemo(() => {
-    const entries = [...searchParams.entries()];
-    return Object.fromEntries(entries);
-  }, [searchParams.toString()]);
-
-  const uniquePlatformsTypes = useMemo(
-    () => [...new Set(products.map((p) => p.platformType))],
-    [products]
-  );
-
-  const uniqueCategories = useMemo(
-    () => [...new Set(products.map((p) => p.category))],
-    [products]
-  );
-
-  useEffect(() => {
-    const abortController = new AbortController();
-    const signal = abortController.signal;
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const { success, result } = await Products.getProducts(
-          queryParams,
-          false,
-          signal
-        );
-        if (success) {
-          setProducts(result?.products || []);
-          setMetadata(result?.metadata || {});
-        }
-      } catch (error: any) {
-        if (error.name === "CanceledError" || error.message === "canceled") {
-          console.warn("Request canceled:", error);
-          return;
-        }
-        if (!signal.aborted) {
-          showErrorToast(
-            error?.response?.data?.errorResponse?.message || error?.message
-          );
-          console.error("Error fetching products", error);
-        }
-      } finally {
-        !signal.aborted && setLoading(false);
-      }
-    };
-    fetchProducts();
-    return () => abortController.abort();
-  }, [queryParams]);
+  }, [user?.type, userType]);
 
   const handleSort = (e: string | null) => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -139,7 +88,6 @@ const AllProducts = () => {
             variant="outline-secondary"
             title={sortText}
             id="input-group-dropdown-2"
-            // className={styles.dropdownBtn}
             onSelect={handleSort}
           >
             <Dropdown.Item eventKey="-avgRating">Rating</Dropdown.Item>
@@ -160,7 +108,7 @@ const AllProducts = () => {
       <Row>
         <Col lg={2}>
           <ProductFilter
-            plataformsTypes={uniquePlatformsTypes}
+            platformsTypes={uniquePlatformsTypes}
             categories={uniqueCategories}
           />
         </Col>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useReducer, createContext, useEffect } from "react";
+import { useReducer, createContext, useEffect, useContext } from "react";
 import requests from "../services/api";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -24,6 +24,14 @@ const Context = createContext<ContextType>({
   cartItems: [],
   cartDispatch: () => {},
 });
+
+export const useAppContext = () => {
+  const context = useContext(Context);
+  if (!context) {
+    throw new Error("useAppContext must be used within a Provider");
+  }
+  return context;
+}
 
 const rootReducer = (state: State, action: Action) => {
   switch (action.type) {

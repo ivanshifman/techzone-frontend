@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 export interface ResponsePayload {
   success: boolean;
@@ -12,7 +12,11 @@ const api = axios.create({
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  (error: AxiosError | any) => {
+    if (axios.isCancel(error)) {
+      console.warn("Request canceled:", error.message);
+      return Promise.reject(error);
+    }
     console.error("API Error:", error.response?.data || error.message);
     return Promise.reject(error);
   }

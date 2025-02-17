@@ -1,9 +1,9 @@
 "use client";
 
-import { FC, useContext, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import { useRouter } from "next/navigation";
-import { Context } from "../../context";
+import { useAppContext } from "../../context";
 import { Users } from "../../services/user.service";
 import { ResponsePayload } from "../../services/api";
 import {
@@ -24,7 +24,7 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
     defaultValues: { email: "", password: "", confirmPassword: "", name: "" },
   });
 
-  const { state, dispatch } = useContext(Context);
+  const { state, dispatch } = useAppContext();
 
   const [loading, setLoading] = useState({
     auth: false,

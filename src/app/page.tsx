@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useAppContext } from "../context";
 import axios from "axios";
 import { Product } from "../interfaces/products.interface";
 import { Button, Col, Row } from "react-bootstrap";
@@ -9,10 +10,10 @@ import { showErrorToast } from "../utils/toast";
 import styles from "../styles/Home.module.css";
 import ProductItem from "../components/Products/ProductItem";
 import Loading from "../components/shared/Loading";
-import { Context } from "../context";
+
 
 const Home = () => {
-  const { state } = useContext(Context);
+  const { state } = useAppContext();
   
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<{

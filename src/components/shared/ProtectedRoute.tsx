@@ -1,11 +1,11 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Context } from "../../context";
+import { useAppContext } from "../../context";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { state } = useContext(Context);
+  const { state } = useAppContext();
 
   const user = state?.user;
   const router = useRouter();

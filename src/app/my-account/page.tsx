@@ -1,8 +1,7 @@
 "use client";
 
-import { useContext } from "react";
 import { useRouter } from "next/navigation";
-import { Context } from "../../context";
+import { useAppContext } from "../../context";
 import { Users } from "../../services/user.service";
 import { ResponsePayload } from "../../services/api";
 import { Col, Nav, Row, Tab } from "react-bootstrap";
@@ -12,7 +11,7 @@ import AccountDetails from "../../components/MyAccount/AccountDetails";
 // import AllOrders from '../components/MyAccount/AllOrders';
 
 const MyAccountPage = () => {
-  const { state, dispatch } = useContext(Context);
+  const { state, dispatch } = useAppContext();
 
   const user = state?.user;
   const token = state?.token;
@@ -23,7 +22,7 @@ const MyAccountPage = () => {
   const logoutHandler = async () => {
     try {
       dispatch({
-        type: "LOGOUT"
+        type: "LOGOUT",
       });
       const { success, message }: ResponsePayload = await Users.logoutUser();
       if (!success) throw new Error(message);

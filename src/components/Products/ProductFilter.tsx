@@ -1,22 +1,28 @@
 import { useRouter, useSearchParams } from "next/navigation";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { Card, Dropdown, DropdownButton, ListGroup } from "react-bootstrap";
-// import styles from '../../styles/Product.module.css';
 
 interface ProductFilterProps {
-  plataformsTypes: string[];
+  platformsTypes: string[];
   categories: string[];
 }
 
 const ProductFilter: FC<ProductFilterProps> = ({
-  plataformsTypes,
+  platformsTypes,
   categories,
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const currentCategory = searchParams.get("category") || "Category";
-  const currentPlatform = searchParams.get("platformType") || "Platform";
+  const currentCategory = useMemo(
+    () => searchParams.get("category") || "Category",
+    [searchParams.toString()]
+  );
+  const currentPlatform = useMemo(
+    () => searchParams.get("platformType") || "Platform",
+    [searchParams.toString()]
+  );
+
   const [filterCatText, setFilterCatText] = useState(currentCategory);
   const [filterPlatformText, setFilterPlatformText] = useState(currentPlatform);
 
@@ -45,6 +51,7 @@ const ProductFilter: FC<ProductFilterProps> = ({
       setFilterPlatformText(e);
       newParams.set("platformType", e);
     } else {
+      setFilterPlatformText("Platform");
       newParams.delete("platformType");
     }
     router.push(`?${newParams.toString()}`);
@@ -59,7 +66,6 @@ const ProductFilter: FC<ProductFilterProps> = ({
             variant="outline-secondary"
             title={filterCatText}
             id="input-group-dropdown-1"
-            // className={styles.dropdownFilterBtn}
             onSelect={handleCategorySelect}
           >
             <Dropdown.Item eventKey="">Select category</Dropdown.Item>
@@ -75,13 +81,12 @@ const ProductFilter: FC<ProductFilterProps> = ({
             variant="outline-secondary"
             title={filterPlatformText}
             id="input-group-dropdown-1"
-            // className={styles.dropdownFilterBtn}
             onSelect={handlePlatformSelect}
           >
             <Dropdown.Item eventKey="">Select platform</Dropdown.Item>
-            {plataformsTypes.map((plataformType) => (
-              <Dropdown.Item key={plataformType} eventKey={plataformType}>
-                {plataformType}
+            {platformsTypes.map((platformType) => (
+              <Dropdown.Item key={platformType} eventKey={platformType}>
+                {platformType}
               </Dropdown.Item>
             ))}
           </DropdownButton>
