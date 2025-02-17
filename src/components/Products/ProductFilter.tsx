@@ -1,5 +1,5 @@
 import { useRouter, useSearchParams } from "next/navigation";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Card, Dropdown, DropdownButton, ListGroup } from "react-bootstrap";
 // import styles from '../../styles/Product.module.css';
 
@@ -14,8 +14,16 @@ const ProductFilter: FC<ProductFilterProps> = ({
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [filterCatText, setFilterCatText] = useState("Category");
-  const [filterPlatformText, setFilterPlatformText] = useState("Platform");
+
+  const currentCategory = searchParams.get("category") || "Category";
+  const currentPlatform = searchParams.get("platformType") || "Platform";
+  const [filterCatText, setFilterCatText] = useState(currentCategory);
+  const [filterPlatformText, setFilterPlatformText] = useState(currentPlatform);
+
+  useEffect(() => {
+    setFilterCatText(currentCategory);
+    setFilterPlatformText(currentPlatform);
+  }, [currentCategory, currentPlatform]);
 
   const handleCategorySelect = (e: string | null) => {
     const newParams = new URLSearchParams(searchParams.toString());

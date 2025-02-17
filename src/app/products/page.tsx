@@ -38,24 +38,22 @@ const AllProducts = () => {
     if (user?.type && user.type !== userType) {
       setUserType(user.type);
     }
-  }, [user, userType]);
+  }, [user?.type]);
 
-  const queryParams = useMemo(
-    () => Object.fromEntries(searchParams.entries()),
-    [searchParams]
+  const queryParams = useMemo(() => {
+    const entries = [...searchParams.entries()];
+    return Object.fromEntries(entries);
+  }, [searchParams.toString()]);
+
+  const uniquePlatformsTypes = useMemo(
+    () => [...new Set(products.map((p) => p.platformType))],
+    [products]
   );
 
-  const uniquePlatformsTypes = useMemo(() => {
-    const plataformsTypesSet = new Set(
-      products.map((product) => product.platformType)
-    );
-    return Array.from(plataformsTypesSet);
-  }, [products]);
-
-  const uniqueCategories = useMemo(() => {
-    const categoriesSet = new Set(products.map((product) => product.category));
-    return Array.from(categoriesSet);
-  }, [products]);
+  const uniqueCategories = useMemo(
+    () => [...new Set(products.map((p) => p.category))],
+    [products]
+  );
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -73,6 +71,10 @@ const AllProducts = () => {
           setMetadata(result?.metadata || {});
         }
       } catch (error: any) {
+        if (error.name === "CanceledError" || error.message === "canceled") {
+          console.warn("Request canceled:", error);
+          return;
+        }
         if (!signal.aborted) {
           showErrorToast(
             error?.response?.data?.errorResponse?.message || error?.message
@@ -90,14 +92,23 @@ const AllProducts = () => {
   const handleSort = (e: string | null) => {
     const newParams = new URLSearchParams(searchParams.toString());
 
+    newParams.delete("avgRating");
+    newParams.delete("createdAt");
+
+    if (e) {
+      if (e === "-avgRating") {
+        newParams.set("avgRating", "desc");
+      } else if (e === "-createdAt") {
+        newParams.set("createdAt", "desc");
+      }
+    }
+
     const sortOptions: Record<string, string> = {
       "-avgRating": "Rating",
       "-createdAt": "Latest",
     };
 
     setSortText(sortOptions[e as string] || "Sort By");
-
-    e ? newParams.set("sort", e) : newParams.delete("sort");
 
     router.push(`${pathname}?${newParams.toString()}`);
   };
@@ -178,7 +189,7 @@ const AllProducts = () => {
       </Row>
       <Row>
         <Col>
-          <PaginationDisplay metadata={metadata || {}} />
+          <PaginationDisplay metadata={metadata} />
         </Col>
       </Row>
     </>
