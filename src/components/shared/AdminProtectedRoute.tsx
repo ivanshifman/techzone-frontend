@@ -14,7 +14,7 @@ const AdminProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (user === undefined) return;
     if (user?.type !== "admin") {
-      router.replace("/products");
+      router.replace("/");
     }
   }, [user, router]);
 

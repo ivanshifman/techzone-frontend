@@ -66,7 +66,7 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
             Object.keys(result.product).forEach((key) => {
               setValue(key as keyof ProductFormType, result.product[key]);
             });
-            setProductForm(result.product);
+            setProductForm(result?.product);
             setIsCreating(false);
             console.log(result.product);
           }
@@ -139,17 +139,30 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
     try {
       setIsLoading(true);
 
+      const validData: ProductFormType = {
+        productName: data.productName,
+        description: data.description,
+        category: data.category,
+        platformType: data.platformType,
+        baseType: data.baseType,
+        productUrl: data.productUrl,
+        requirementSpecification: data.requirementSpecification,
+        highlights: data.highlights,
+        downloadUrl: data.downloadUrl,
+      };
+
       const { success, message }: ResponsePayload = productId
-        ? await Products.updateProduct(productId, data)
-        : await Products.saveProduct(data);
+        ? await Products.updateProduct(productId, validData)
+        : await Products.saveProduct(validData);
 
       if (!success) throw new Error(message);
       showSuccessToast(message);
-      router.push("/products");
+      router.push("/");
     } catch (error: any) {
       showErrorToast(
         error.response?.data?.errorResponse.message || error.message
       );
+      console.log("Error updating product:", error);
     } finally {
       setIsLoading(false);
     }
@@ -441,6 +454,7 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
                   variant="primary"
                   type="submit"
                   disabled={isLoading}
+                  onClick={handleSubmit(onSubmit)}
                 >
                   {isLoading && (
                     <span
