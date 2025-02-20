@@ -1,5 +1,6 @@
 import requests, { ResponsePayload } from "./api";
 import queryString from "query-string";
+import { ProductFormType } from "../interfaces/products.interface";
 
 export const Products = {
   getProducts: async (
@@ -26,7 +27,7 @@ export const Products = {
   },
 
   saveProduct: async (
-    product: Record<string, any>
+    product: ProductFormType
   ): Promise<ResponsePayload> => {
     const saveProductRes = await requests.post<ResponsePayload>(
       "/products",
@@ -37,7 +38,7 @@ export const Products = {
 
   updateProduct: async (
     id: string,
-    product: Record<string, any>
+    product: ProductFormType
   ): Promise<ResponsePayload> => {
     const updateProductRes = await requests.patch<ResponsePayload>(
       `/products/${id}`,

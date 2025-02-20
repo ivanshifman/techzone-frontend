@@ -66,6 +66,7 @@ const ProductFilter: FC<ProductFilterProps> = ({
             variant="outline-secondary"
             title={filterCatText}
             id="input-group-dropdown-1"
+            aria-label="Select category"
             onSelect={handleCategorySelect}
           >
             <Dropdown.Item eventKey="">Select category</Dropdown.Item>
@@ -81,6 +82,7 @@ const ProductFilter: FC<ProductFilterProps> = ({
             variant="outline-secondary"
             title={filterPlatformText}
             id="input-group-dropdown-1"
+            aria-label="Select platform"
             onSelect={handlePlatformSelect}
           >
             <Dropdown.Item eventKey="">Select platform</Dropdown.Item>

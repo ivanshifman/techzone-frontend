@@ -40,16 +40,11 @@ const AllProducts = () => {
 
   const handleSort = (e: string | null) => {
     const newParams = new URLSearchParams(searchParams.toString());
-
     newParams.delete("avgRating");
     newParams.delete("createdAt");
 
     if (e) {
-      if (e === "-avgRating") {
-        newParams.set("avgRating", "desc");
-      } else if (e === "-createdAt") {
-        newParams.set("createdAt", "desc");
-      }
+      newParams.set(e.replace("-", ""), "desc");
     }
 
     const sortOptions: Record<string, string> = {
@@ -58,7 +53,6 @@ const AllProducts = () => {
     };
 
     setSortText(sortOptions[e as string] || "Sort By");
-
     router.push(`${pathname}?${newParams.toString()}`);
   };
 
@@ -96,7 +90,7 @@ const AllProducts = () => {
           </DropdownButton>
           {userType?.toLowerCase() === "admin" && (
             <Link
-              href="/products/update-product"
+              href="/update-product"
               className="btn btn-primary btnAddProduct"
             >
               <PlusCircle className="btnAddProductIcon" />

@@ -316,3 +316,7 @@ button.reloadBtn.btn.btn-outline-secondary:hover {
   border-color: rgba(28, 21, 21, 0.897) !important;
   box-shadow: 5px 5px 4px -1px rgba(0, 0, 0, 0.08) !important;
 }
+
+.resize-none {
+  resize: none;
+}

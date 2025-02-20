@@ -57,12 +57,25 @@ export interface Product {
   platformType: string;
   productName: string;
   productUrl: string;
-  requirementSpecification: string[] | [];
+  requirementSpecification: { [key: string]: string }[];
   skuDetails: SkuDetail[] | [];
   stripeProductId: string;
   updatedAt: string;
   avgRating?: number;
 }
+
+export type ProductFormType = Omit<
+  Product,
+  | "_id"
+  | "createdAt"
+  | "updatedAt"
+  | "image"
+  | "imageDetails"
+  | "feedbackDetails"
+  | "skuDetails"
+  | "stripeProductId"
+  | "avgRating"
+>;
 
 export interface MetadataProducts {
   skip: number;

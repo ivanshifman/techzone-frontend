@@ -130,7 +130,7 @@ const ProductItem: FC<IProductItemProps> = ({ userType, product }) => {
                 />
               </div>
               <Link
-                href={`/products/update-product?productId=${product?._id}`}
+                href={`/update-product/${product?._id}`}
                 className="btn btn-outline-dark viewProdBtn"
               >
                 <Pen />
