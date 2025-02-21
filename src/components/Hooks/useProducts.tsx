@@ -41,41 +41,43 @@ export const useProducts = () => {
     [products]
   );
 
+  const fetchProducts = async (signal: AbortSignal) => {
+    setLoading(true);
+    try {
+      const { success, result } = await Products.getProducts(
+        queryParams,
+        false,
+        signal
+      );
+      if (success) {
+        setProducts(result?.products || []);
+        setMetadata(result?.metadata || {});
+      }
+    } catch (error: any) {
+      if (error.name !== "CanceledError" && error.message !== "canceled") {
+        console.error("API Error:", error);
+      }
+
+      if (!signal.aborted) {
+        showErrorToast(
+          error?.response?.data?.errorResponse?.message || error?.message
+        );
+        console.error("Error fetching products", error);
+      }
+    } finally {
+      !signal.aborted && setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const { success, result } = await Products.getProducts(
-          queryParams,
-          false,
-          signal
-        );
-        if (success) {
-          setProducts(result?.products || []);
-          setMetadata(result?.metadata || {});
-        }
-      } catch (error: any) {
-        if (error.name !== "CanceledError" && error.message !== "canceled") {
-          console.error("API Error:", error);
-        }
-
-        if (!signal.aborted) {
-          showErrorToast(
-            error?.response?.data?.errorResponse?.message || error?.message
-          );
-          console.error("Error fetching products", error);
-        }
-      } finally {
-        !signal.aborted && setLoading(false);
-      }
-    };
-    fetchProducts();
+    fetchProducts(signal);
     return () => abortController.abort();
   }, [queryParams]);
 
   return {
+    fetchProducts,
     products,
     metadata,
     loading,

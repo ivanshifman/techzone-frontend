@@ -39,7 +39,13 @@ interface UpdateProductProps {
 const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
   const router = useRouter();
 
-  const { register, handleSubmit, setValue, reset } = useForm<ProductFormType>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<ProductFormType>({
     defaultValues: initialForm,
   });
   const [productForm, setProductForm] = useState(initialForm);
@@ -52,7 +58,7 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
   const [isCreating, setIsCreating] = useState(!productId);
 
   useEffect(() => {
-    if (productId === undefined) return;
+    if (!productId) return;
     const fetchProduct = async () => {
       if (!/^[0-9a-fA-F]{24}$/.test(productId)) {
         showErrorToast("Invalid product ID");
@@ -86,22 +92,35 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
   }, [productId, setValue]);
 
   useEffect(() => {
-    setValue("requirementSpecification", productForm.requirementSpecification);
-    setValue("highlights", productForm.highlights);
+    if (
+      JSON.stringify(productForm.requirementSpecification) !==
+      JSON.stringify(initialForm.requirementSpecification)
+    ) {
+      setValue(
+        "requirementSpecification",
+        productForm.requirementSpecification
+      );
+    }
+    if (
+      JSON.stringify(productForm.highlights) !==
+      JSON.stringify(initialForm.highlights)
+    ) {
+      setValue("highlights", productForm.highlights);
+    }
   }, [productForm, setValue]);
 
   const handleHighlightAdd = () => {
     if (!highlight.trim()) return;
 
-    setProductForm((prevState) => ({
-      ...prevState,
-      highlights:
-        updateHighlightIndex > -1
-          ? prevState.highlights.map((value, index) =>
-              index === updateHighlightIndex ? highlight : value
-            )
-          : [...prevState.highlights, highlight],
-    }));
+    setProductForm((prevState) => {
+      const updatedHighlights = [...prevState.highlights];
+      if (updateHighlightIndex > -1) {
+        updatedHighlights[updateHighlightIndex] = highlight;
+      } else {
+        updatedHighlights.push(highlight);
+      }
+      return { ...prevState, highlights: updatedHighlights };
+    });
 
     setHighlight("");
     setUpdateHighlightIndex(-1);
@@ -116,7 +135,7 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
         requirementSpecification: prevState.requirementSpecification.map(
           (req, index) =>
             index === updateRequirementIndex
-              ? { [requirementName]: requirementDescription }
+              ? { ...req, [requirementName]: requirementDescription }
               : req
         ),
       }));
@@ -190,6 +209,11 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
                 placeholder="Enter Product name"
                 autoComplete="Product name"
               />
+              {errors.productName && (
+                <Form.Text className="text-danger mx-2">
+                  {errors.productName.message as string}
+                </Form.Text>
+              )}
             </Form.Group>
             <Form.Group className="mb-3" controlId="description">
               <Form.Label>Product Description</Form.Label>
@@ -205,6 +229,11 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
                 placeholder="Enter Product Description"
                 autoComplete="Product description"
               />
+              {errors.description && (
+                <Form.Text className="text-danger mx-2">
+                  {errors.description.message as string}
+                </Form.Text>
+              )}
             </Form.Group>
             <Form.Group controlId="requirementSpecification" className="mb-3">
               <Form.Label>Product Requirements</Form.Label>
@@ -234,6 +263,20 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
                   <Check2Circle />
                 </Button>
               </InputGroup>
+              <Form.Control
+                type="hidden"
+                {...register("requirementSpecification", {
+                  validate: (value) =>
+                    isCreating && (!value || value.length === 0)
+                      ? "At least one requirement is required"
+                      : true,
+                })}
+              />
+              {errors.requirementSpecification && (
+                <Form.Text className="text-danger mx-2">
+                  {errors.requirementSpecification.message as string}
+                </Form.Text>
+              )}
             </Form.Group>
             <div>
               <p className="text-primary">Requirements are listed here:</p>
@@ -279,8 +322,8 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
                                 setProductForm({
                                   ...productForm,
                                   requirementSpecification:
-                                    productForm.requirementSpecification.map(
-                                      (req, i) =>
+                                    productForm.requirementSpecification
+                                      .map((req, i) =>
                                         i === index
                                           ? Object.fromEntries(
                                               Object.entries(req).filter(
@@ -288,7 +331,10 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
                                               )
                                             )
                                           : req
-                                    ),
+                                      )
+                                      .filter(
+                                        (req) => Object.keys(req).length > 0
+                                      ),
                                 });
                               }}
                             >
@@ -327,6 +373,11 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
                   Application Software
                 </option>
               </Form.Select>
+              {errors.category && (
+                <Form.Text className="text-danger mx-2">
+                  {errors.category.message as string}
+                </Form.Text>
+              )}
             </Form.Group>
             <Form.Group controlId="platformType">
               <Form.Label>Platform Type</Form.Label>
@@ -344,6 +395,11 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
                 <option value="Linux">Linux</option>
                 <option value="Mac">Mac</option>
               </Form.Select>
+              {errors.platformType && (
+                <Form.Text className="text-danger mx-2">
+                  {errors.platformType.message as string}
+                </Form.Text>
+              )}
             </Form.Group>
             <Form.Group controlId="baseType">
               <Form.Label>Base Type</Form.Label>
@@ -358,6 +414,11 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
                 <option value="Computer">Computer</option>
                 <option value="Mobile">Mobile</option>
               </Form.Select>
+              {errors.baseType && (
+                <Form.Text className="text-danger mx-2">
+                  {errors.baseType.message as string}
+                </Form.Text>
+              )}
             </Form.Group>
             <Form.Group controlId="productUrl">
               <Form.Label>Product URL</Form.Label>
@@ -370,6 +431,11 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
                 placeholder="Enter Product URL"
                 autoComplete="Product URL"
               />
+              {errors.productUrl && (
+                <Form.Text className="text-danger mx-2">
+                  {errors.productUrl.message as string}
+                </Form.Text>
+              )}
             </Form.Group>
             <Form.Group controlId="downloadUrl">
               <Form.Label>Product Download URL</Form.Label>
@@ -382,6 +448,11 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
                 placeholder="Enter Product Download URL"
                 autoComplete="Product Download URL"
               />
+              {errors.downloadUrl && (
+                <Form.Text className="text-danger mx-2">
+                  {errors.downloadUrl.message as string}
+                </Form.Text>
+              )}
             </Form.Group>
             <Form.Group controlId="highlights">
               <Form.Label>Product Highlights</Form.Label>
@@ -403,6 +474,20 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
                   <Check2Circle />
                 </Button>
               </InputGroup>
+              <Form.Control
+                type="hidden"
+                {...register("highlights", {
+                  validate: (value) =>
+                    isCreating && (!value || value.length === 0)
+                      ? "At least one highlights is required"
+                      : true,
+                })}
+              />
+              {errors.highlights && (
+                <Form.Text className="text-danger mx-2">
+                  {errors.highlights.message as string}
+                </Form.Text>
+              )}
             </Form.Group>
             <p className="text-primary">Product highlights are listed below:</p>
             <ListGroup className="overflow-auto">
@@ -446,7 +531,7 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
                 <Link href="/products">
                   <Button variant="secondary">Back</Button>
                 </Link>{" "}
-                <Button variant="info" onClick={handleCancel}>
+                <Button variant="danger" onClick={handleCancel}>
                   Cancel
                 </Button>{" "}
                 <Button

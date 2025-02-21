@@ -18,6 +18,7 @@ const AllProducts = () => {
   const { state } = useAppContext();
   const {
     products,
+    fetchProducts,
     metadata,
     loading,
     uniqueCategories,
@@ -54,6 +55,12 @@ const AllProducts = () => {
 
     setSortText(sortOptions[e as string] || "Sort By");
     router.push(`${pathname}?${newParams.toString()}`);
+  };
+
+  const handleDeleteProduct = async () => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+    await fetchProducts(signal);
   };
 
   if (loading) return <Loading />;
@@ -114,6 +121,7 @@ const AllProducts = () => {
                   key={product._id as string}
                   userType={userType}
                   product={product}
+                  onDelete={handleDeleteProduct}
                 />
               ))}
             </Row>

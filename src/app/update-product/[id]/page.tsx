@@ -9,9 +9,9 @@ const UpdateProductIdPage = () => {
   const productId = Array.isArray(id) ? id[0] : id ?? "";
 
   return (
-    // <AdminProtectedRoute>
+    <AdminProtectedRoute>
       <ProductForm productId={productId} />
-    // </AdminProtectedRoute>
+    </AdminProtectedRoute>
   );
 };
 

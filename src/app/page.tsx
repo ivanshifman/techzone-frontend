@@ -11,10 +11,9 @@ import styles from "../styles/Home.module.css";
 import ProductItem from "../components/Products/ProductItem";
 import Loading from "../components/shared/Loading";
 
-
 const Home = () => {
   const { state } = useAppContext();
-  
+
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<{
     latestProducts: Product[];
@@ -27,40 +26,45 @@ const Home = () => {
   const userType = state?.user?.type;
   const router = useRouter();
 
+  const fetchProducts = async (signal?: AbortSignal) => {
+    setLoading(true);
+    try {
+      const baseUrl =
+        process.env.NODE_ENV !== "production"
+          ? process.env.NEXT_PUBLIC_BASE_API_URL_LOCAL
+          : process.env.NEXT_PUBLIC_BASE_API_URL;
+
+      const { data } = await axios.get(`${baseUrl}/products?homePage=true`, {
+        signal,
+      });
+
+      setProducts(
+        data?.result[0] || { latestProducts: [], topRatedProducts: [] }
+      );
+    } catch (error: any) {
+      if (!axios.isCancel(error)) {
+        showErrorToast(
+          error?.response?.data?.errorResponse.message || error?.message
+        );
+        console.error("Error fetching products", error);
+      }
+    } finally {
+      !signal?.aborted && setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const abortController = new AbortController();
-    const signal = abortController.signal;
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const baseUrl =
-          process.env.NODE_ENV !== "production"
-            ? process.env.NEXT_PUBLIC_BASE_API_URL_LOCAL
-            : process.env.NEXT_PUBLIC_BASE_API_URL;
+    fetchProducts(abortController.signal);
 
-        const { data } = await axios.get(`${baseUrl}/products?homePage=true`, {
-          signal,
-        });
-        setProducts(
-          data?.result[0] || { latestProducts: [], topRatedProducts: [] }
-        );
-      } catch (error: any) {
-        if (!axios.isCancel(error)) {
-          showErrorToast(
-            error?.response?.data?.errorResponse.message || error?.message
-          );
-          console.error("Error fetching products", error);
-        }
-      } finally {
-        !signal.aborted && setLoading(false);
-      }
-    };
-
-    fetchProducts();
     return () => abortController.abort();
   }, []);
 
   console.log("products", products);
+
+  const handleDeleteProduct = async () => {
+    await fetchProducts();
+  };
 
   if (loading) {
     return <Loading />;
@@ -74,9 +78,10 @@ const Home = () => {
           {products.latestProducts.map(
             (product: Product, index: React.Key | null | undefined) => (
               <ProductItem
+                key={index}
                 product={product}
                 userType={userType || "customer"}
-                key={index}
+                onDelete={handleDeleteProduct}
               />
             )
           )}
@@ -99,6 +104,7 @@ const Home = () => {
                   key={index}
                   product={product}
                   userType={userType || "customer"}
+                  onDelete={handleDeleteProduct}
                 />
               )
             )}

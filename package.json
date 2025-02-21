@@ -23,7 +23,8 @@
     "react-loading-indicators": "^1.0.0",
     "react-numeric-input": "^2.2.3",
     "react-simple-star-rating": "^5.1.7",
-    "react-toastify": "^11.0.3"
+    "react-toastify": "^11.0.3",
+    "sweetalert2": "^11.17.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -2,15 +2,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FC, useState } from "react";
 import { Products } from "../../services/product.service";
+import { SkuDetail } from "../../interfaces/products.interface";
+import { IProductItemProps } from "../../interfaces/productItem.interface";
 import { getFormatedStringFromDays } from "../../utils/formatStringFromDays";
 import { Button, Card, Col, Badge } from "react-bootstrap";
 import { Eye, Pen, Trash, Upload } from "react-bootstrap-icons";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import { Rating } from "react-simple-star-rating";
-import { SkuDetail } from "../../interfaces/products.interface";
-import { IProductItemProps } from "../../interfaces/productItem.interface";
+import Swal from "sweetalert2";
 
-const ProductItem: FC<IProductItemProps> = ({ userType, product }) => {
+const ProductItem: FC<IProductItemProps> = ({ userType, product, onDelete }) => {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -20,15 +21,24 @@ const ProductItem: FC<IProductItemProps> = ({ userType, product }) => {
   const deleteProduct = async () => {
     try {
       setIsLoading(true);
-      const deleteConfirm = confirm(
-        "Want to delete? You will lost all details, skus and licences for this product"
-      );
-      if (deleteConfirm) {
+
+      const { isConfirmed } = await Swal.fire({
+        title: "Are you sure?",
+        text: "You will lose all details, SKUs, and licenses for this product.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "Cancel",
+      });
+
+      if (isConfirmed) {
         const { success, message } = await Products.deleteProduct(product._id);
         if (!success) {
           throw new Error(message);
         }
-        router.push("/products/");
+        onDelete();
         showSuccessToast(message);
       }
     } catch (error: any) {
