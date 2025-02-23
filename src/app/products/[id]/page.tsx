@@ -18,8 +18,8 @@ import {
   Tab,
   Table,
 } from "react-bootstrap";
-import NumericInput from "react-numeric-input";
-import { BagCheckFill } from "react-bootstrap-icons";
+import InputNumber from "rc-input-number";
+import { BagCheckFill, FileMinus, FilePlus } from "react-bootstrap-icons";
 // import CartOffCanvas from "../../components/CartOffCanvas";
 // import SkuDetailsList from "../../components/Product/SkuDetailsList";
 // import ReviewSection from "../../components/Product/ReviewSection";
@@ -180,14 +180,18 @@ const Product = () => {
                   </Badge>
                 ))}
           </div>
+
           <div className="productSkuZone">
-            <NumericInput
+            <InputNumber
               min={1}
               max={displaySku?.stock || 0}
-              value={quantity}
-              size={displaySku?.stock || 0}
+              controls={true}
+              step={1}
+              defaultValue={quantity}
               onChange={(value) => setQuantity(Number(value))}
               disabled={!displaySku?.price}
+              downHandler={<FileMinus fontSize={35} cursor={"pointer"} />}
+              upHandler={<FilePlus fontSize={35} cursor={"pointer"} />}
             />
             {/* <Form.Select
 							aria-label='Default select example'
@@ -210,7 +214,6 @@ const Product = () => {
                 ? "Update cart"
                 : "Add to cart"}
             </Button>
-            {/* )} */}
           </div>
         </Col>
       </Row>
@@ -276,7 +279,7 @@ const Product = () => {
                   <Table responsive>
                     <tbody>
                       {product?.requirementSpecification &&
-                        product?.requirementSpecification.length > 0 &&
+                        product?.requirementSpecification.length &&
                         product?.requirementSpecification.map(
                           (requirement, key) => (
                             <tr key={key}>

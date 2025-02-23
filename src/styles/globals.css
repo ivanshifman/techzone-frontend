@@ -324,3 +324,36 @@ button.reloadBtn.btn.btn-outline-secondary:hover {
 .cursor-pointer {
   cursor: pointer;
 }
+
+.rc-input-number {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.rc-input-number-handler-wrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-left: 8px;
+  order: 2;
+}
+
+.rc-input-number-handler {
+  cursor: pointer;
+  padding: 4px;
+}
+
+.rc-input-number-handler-up {
+  order: 1;
+}
+
+.rc-input-number-input {
+  width: 5rem;
+  border-radius: 4px;
+  text-align: center;
+  padding: 5px;
+  background-color: #d5feff;
+  color: #000;
+}
