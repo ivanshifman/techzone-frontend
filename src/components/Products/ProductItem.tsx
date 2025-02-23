@@ -11,7 +11,11 @@ import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import { Rating } from "react-simple-star-rating";
 import Swal from "sweetalert2";
 
-const ProductItem: FC<IProductItemProps> = ({ userType, product, onDelete }) => {
+const ProductItem: FC<IProductItemProps> = ({
+  userType,
+  product,
+  onDelete,
+}) => {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -91,26 +95,15 @@ const ProductItem: FC<IProductItemProps> = ({ userType, product, onDelete }) => 
             {product.productName}
           </Card.Title>
           <Rating initialValue={product?.avgRating || 0} readonly size={20} />
-
           <Card.Text>
             <span className="priceText">
-              <span className="priceText">
-                {product?.skuDetails
-                  ? product?.skuDetails?.length > 1
-                    ? `USD${Math.min.apply(
-                        Math,
-                        product?.skuDetails.map(
-                          (sku: { price: number }) => sku.price
-                        )
-                      )} - USD${Math.max.apply(
-                        Math,
-                        product?.skuDetails.map(
-                          (sku: { price: number }) => sku.price
-                        )
-                      )}`
-                    : `USD${product?.skuDetails?.[0]?.price || "000"}`
-                  : "USD000"}{" "}
-              </span>
+              {product?.skuDetails?.length > 0
+                ? `USD${Math.min(
+                    ...product.skuDetails.map((sku) => sku.price)
+                  )} - USD${Math.max(
+                    ...product.skuDetails.map((sku) => sku.price)
+                  )}`
+                : "USD000"}
             </span>
           </Card.Text>
           {product?.skuDetails &&
@@ -120,7 +113,7 @@ const ProductItem: FC<IProductItemProps> = ({ userType, product, onDelete }) => 
                 (a: SkuDetail, b: SkuDetail) =>
                   (a.validity ?? 0) - (b.validity ?? 0)
               )
-              .map((sku: Record<string, any>, key: any) => (
+              .map((sku: SkuDetail, key: any) => (
                 <Badge bg="warning" text="dark" className="skuBtn" key={key}>
                   {sku.lifetime
                     ? "Lifetime"

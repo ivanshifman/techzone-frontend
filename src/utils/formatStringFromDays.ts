@@ -1,4 +1,7 @@
-export const getFormatedStringFromDays = (numberOfDays: number) => {
+export const getFormatedStringFromDays = (numberOfDays: number | undefined) => {
+  if (numberOfDays === undefined) {
+    return "Invalid number of days";
+  }
   const years = Math.floor(numberOfDays / 365);
   const months = Math.floor((numberOfDays % 365) / 30);
   const days = Math.floor((numberOfDays % 365) % 30);

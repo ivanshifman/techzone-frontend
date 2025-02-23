@@ -320,3 +320,7 @@ button.reloadBtn.btn.btn-outline-secondary:hover {
 .resize-none {
   resize: none;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}

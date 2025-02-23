@@ -12,23 +12,24 @@ export const Products = {
       url: serverSide ? "" : "/products",
       query: filter,
     });
-    
+
     const getProductRes = signal
-    ? await requests.getSignal<ResponsePayload>(url, signal)
-    : await requests.get<ResponsePayload>(url);
+      ? await requests.getSignal<ResponsePayload>(url, signal)
+      : await requests.get<ResponsePayload>(url);
     return getProductRes;
   },
 
-  getProduct: async (id: string): Promise<ResponsePayload> => {
-    const getProductRes = await requests.get<ResponsePayload>(
-      `/products/${id}`
-    );
-    return getProductRes;
-  },
-
-  saveProduct: async (
-    product: ProductFormType
+  getProduct: async (
+    id: string,
+    signal?: AbortSignal
   ): Promise<ResponsePayload> => {
+    const getProductRes = signal
+      ? await requests.getSignal<ResponsePayload>(`/products/${id}`, signal)
+      : await requests.get<ResponsePayload>(`/products/${id}`);
+    return getProductRes;
+  },
+
+  saveProduct: async (product: ProductFormType): Promise<ResponsePayload> => {
     const saveProductRes = await requests.post<ResponsePayload>(
       "/products",
       product

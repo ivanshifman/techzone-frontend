@@ -20,12 +20,17 @@ export type Action =
   | { type: "LOGOUT" }
   | { type: "UPDATE_USER"; payload: { user: User; token: Token } };
 
-export type CartItem = {
-  skuId: string;
-  name: string;
-  price: number;
-  quantity: number;
-};
+  interface CartItem {
+    skuId: string;
+    quantity: number;
+    validity?: number;
+    lifetime: boolean;
+    price: number;
+    productName: string;
+    productImage: string;
+    productId: string;
+    skuPriceId: string;
+  }
 
 export type CartAction =
   | { type: "ADD_ITEM"; payload: CartItem }

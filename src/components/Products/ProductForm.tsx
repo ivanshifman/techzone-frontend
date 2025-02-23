@@ -188,7 +188,7 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
   };
 
   const handleCancel = () => {
-    reset(initialForm);
+    reset(productForm);
   };
 
   return (
@@ -362,6 +362,7 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
               <Form.Label>Product Category</Form.Label>
               <Form.Select
                 aria-label="Default select example"
+                 className="form-control-no-focus"
                 {...register("category", {
                   required: isCreating ? "Product category is required" : false,
                 })}
@@ -383,6 +384,7 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
               <Form.Label>Platform Type</Form.Label>
               <Form.Select
                 aria-label="Default select example"
+                className="form-control-no-focus"
                 {...register("platformType", {
                   required: isCreating ? "Platform type is required" : false,
                 })}
@@ -405,6 +407,7 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
               <Form.Label>Base Type</Form.Label>
               <Form.Select
                 aria-label="Default select example"
+                className="form-control-no-focus"
                 {...register("baseType", {
                   required: isCreating ? "Base type is required" : false,
                 })}

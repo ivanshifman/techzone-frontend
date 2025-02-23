@@ -13,7 +13,7 @@ const BreadcrumbDisplay: FC<IPropsBreadcrumb> = memo(({ childrens = [] }) => {
           key={text}
           active={active}
           onClick={() => !active && router.push(href)}
-          style={{ cursor: active ? "default" : "pointer" }}
+          className={!active ? "cursor-pointer" : ""}
         >
           {text}
         </Breadcrumb.Item>
