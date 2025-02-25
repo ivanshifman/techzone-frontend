@@ -21,8 +21,8 @@ import {
 import InputNumber from "rc-input-number";
 import { BagCheckFill, FileMinus, FilePlus } from "react-bootstrap-icons";
 // import CartOffCanvas from "../../components/CartOffCanvas";
-// import SkuDetailsList from "../../components/Product/SkuDetailsList";
-// import ReviewSection from "../../components/Product/ReviewSection";
+import SkuDetailsList from "../../../components/Product/SkuDetailsList";
+import ReviewSection from "../../../components/Product/ReviewSection";
 import ProductItem from "../../../components/Products/ProductItem";
 import Loading from "../../../components/shared/Loading";
 import { showErrorToast } from "../../../utils/toast";
@@ -54,12 +54,18 @@ const Product = () => {
   }, [user?.type, userType]);
 
   useEffect(() => {
+    if (product?.skuDetails) {
+      setAllSkuDetails(product.skuDetails);
+    }
+  }, [product]);
+
+  useEffect(() => {
     if (product?.skuDetails?.length) {
       setDisplaySku(
         product.skuDetails.sort((a, b) => a.price - b.price)[0] || null
       );
     }
-  }, [product]);
+  }, [product?.skuDetails]);
 
   const fetchProducts = async (signal?: AbortSignal) => {
     if (!/^[0-9a-fA-F]{24}$/.test(productId) || !productId) {
@@ -92,13 +98,24 @@ const Product = () => {
     return () => abortController.abort();
   }, [productId]);
 
+  const hasMultiplePrices =
+    product?.skuDetails && product?.skuDetails?.length > 1;
+  const minPrice = hasMultiplePrices
+    ? Math.min(...product.skuDetails.map((sku) => sku.price))
+    : 0;
+  const maxPrice = hasMultiplePrices
+    ? Math.max(...product.skuDetails.map((sku) => sku.price))
+    : 0;
+
+  const existingItem = cartItems.find(
+    (item: { skuId: string }) => item.skuId === displaySku?._id
+  );
+
   const handleCart = () => {
+    const actionType = existingItem ? "UPDATE_CART" : "ADD_ITEM";
+
     cartDispatch({
-      type: cartItems.find(
-        (item: { skuId: string }) => item.skuId === displaySku?._id
-      )
-        ? "UPDATE_CART"
-        : "ADD_ITEM",
+      type: actionType,
       payload: {
         skuId: displaySku?._id || "",
         quantity: quantity,
@@ -136,14 +153,7 @@ const Product = () => {
             ({product?.feedbackDetails?.length || 0} reviews)
           </div>
           <p className="productPrice me-2">
-            {product?.skuDetails && product?.skuDetails?.length
-              ? `USD${Math.min(
-                  ...product.skuDetails.map((sku) => sku.price)
-                )} - USD${Math.max(
-                  ...product.skuDetails.map((sku) => sku.price)
-                )}`
-              : "USD000"}
-            {/* USD{displaySku?.price || "000"} {""} */}
+            {hasMultiplePrices ? `USD${minPrice} - USD${maxPrice}` : "USD000"}
             <Badge bg="warning" text="dark" className="ms-2">
               {displaySku?.lifetime
                 ? "Lifetime"
@@ -157,21 +167,20 @@ const Product = () => {
                 <li key={key}>{highlight}</li>
               ))}
           </ul>
-
           <div>
             {product?.skuDetails &&
-              product?.skuDetails?.length &&
+              product?.skuDetails?.length > 0 &&
               product?.skuDetails
                 .sort(
                   (a: SkuDetail, b: SkuDetail) =>
                     (a.validity ?? 0) - (b.validity ?? 0)
                 )
-                .map((sku: SkuDetail, key: any) => (
+                .map((sku: SkuDetail) => (
                   <Badge
                     bg="info"
                     text="dark"
                     className="skuBtn cursor-pointer"
-                    key={key}
+                    key={sku._id}
                     onClick={() => setDisplaySku(sku)}
                   >
                     {sku.lifetime
@@ -180,7 +189,6 @@ const Product = () => {
                   </Badge>
                 ))}
           </div>
-
           <div className="productSkuZone">
             <InputNumber
               min={1}
@@ -210,9 +218,7 @@ const Product = () => {
               disabled={!displaySku?.price}
             >
               <BagCheckFill className="cartIcon" />
-              {cartItems.find((item: any) => item.skuId === displaySku?._id)
-                ? "Update cart"
-                : "Add to cart"}
+              {existingItem ? "Update cart" : "Add to cart"}
             </Button>
           </div>
         </Col>
@@ -222,37 +228,28 @@ const Product = () => {
       <Row>
         <Tab.Container id="left-tabs-example" defaultActiveKey="first">
           <Row className="g-3">
-            <Col sm={3}>
+            <Col md={3}>
               <Nav variant="pills" className="flex-column">
                 <Nav.Item>
-                  <Nav.Link eventKey="first" href="#">
-                    Descriptions
-                  </Nav.Link>
+                  <Nav.Link eventKey="first">Descriptions</Nav.Link>
                 </Nav.Item>
                 {product?.requirementSpecification &&
                   product?.requirementSpecification.length > 0 && (
                     <Nav.Item>
-                      <Nav.Link eventKey="second" href="#">
-                        Requirements
-                      </Nav.Link>
+                      <Nav.Link eventKey="second">Requirements</Nav.Link>
                     </Nav.Item>
                   )}
-
                 <Nav.Item>
-                  <Nav.Link eventKey="third" href="#">
-                    Reviews
-                  </Nav.Link>
+                  <Nav.Link eventKey="third">Reviews</Nav.Link>
                 </Nav.Item>
                 {user?.type === "admin" && (
                   <Nav.Item>
-                    <Nav.Link eventKey="fourth" href="#">
-                      Product SKUs
-                    </Nav.Link>
+                    <Nav.Link eventKey="fourth">Product SKUs</Nav.Link>
                   </Nav.Item>
                 )}
               </Nav>
             </Col>
-            <Col sm={9}>
+            <Col md={9}>
               <Tab.Content>
                 <Tab.Pane eventKey="first">
                   {product?.description} <br />
@@ -279,7 +276,7 @@ const Product = () => {
                   <Table responsive>
                     <tbody>
                       {product?.requirementSpecification &&
-                        product?.requirementSpecification.length &&
+                        product?.requirementSpecification.length > 0 &&
                         product?.requirementSpecification.map(
                           (requirement, key) => (
                             <tr key={key}>
@@ -294,17 +291,17 @@ const Product = () => {
                   </Table>
                 </Tab.Pane>
                 <Tab.Pane eventKey="third">
-                  {/* <ReviewSection
-                    reviews={product.feedbackDetails || []}
-                    productId={product._id}
-                  /> */}
+                  <ReviewSection
+                    reviews={product?.feedbackDetails || []}
+                    productId={product?._id || ""}
+                  />
                 </Tab.Pane>
                 <Tab.Pane eventKey="fourth">
-                  {/* <SkuDetailsList
+                  <SkuDetailsList
                     skuDetails={allSkuDetails}
                     setAllSkuDetails={setAllSkuDetails}
-                    productId={product._id}
-                  /> */}
+                    productId={product?._id || ""}
+                  />
                 </Tab.Pane>
               </Tab.Content>
             </Col>

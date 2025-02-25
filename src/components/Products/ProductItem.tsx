@@ -23,9 +23,8 @@ const ProductItem: FC<IProductItemProps> = ({
   const [image, setImage] = useState(product?.image);
 
   const deleteProduct = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-
       const { isConfirmed } = await Swal.fire({
         title: "Are you sure?",
         text: "You will lose all details, SKUs, and licenses for this product.",
