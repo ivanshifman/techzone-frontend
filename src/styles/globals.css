@@ -329,6 +329,7 @@ button.reloadBtn.btn.btn-outline-secondary:hover {
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
+  width: max-content;
 }
 
 .rc-input-number-handler-wrap {
@@ -350,7 +351,7 @@ button.reloadBtn.btn.btn-outline-secondary:hover {
 }
 
 .rc-input-number-input {
-  width: 5rem;
+  max-width: 5rem;
   border-radius: 4px;
   text-align: center;
   padding: 5px;

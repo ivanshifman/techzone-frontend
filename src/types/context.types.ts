@@ -20,7 +20,8 @@ export type Action =
   | { type: "LOGOUT" }
   | { type: "UPDATE_USER"; payload: { user: User; token: Token } };
 
-  interface CartItem {
+export interface CartItem {
+    user: User,
     skuId: string;
     quantity: number;
     validity?: number;
@@ -33,11 +34,11 @@ export type Action =
   }
 
 export type CartAction =
-  | { type: "ADD_ITEM"; payload: CartItem }
-  | { type: "REMOVE_ITEM"; payload: { skuId: string } }
-  | { type: "UPDATE_CART"; payload: CartItem }
-  | { type: "GET_CART_ITEMS"; payload: CartItem[] }
-  | { type: "CLEAR_CART" };
+  | { type: "ADD_ITEM"; payload: CartItem, cartKey: string }
+  | { type: "REMOVE_ITEM"; payload: { skuId: string }, cartKey: string }
+  | { type: "UPDATE_CART"; payload: CartItem, cartKey: string }
+  | { type: "GET_CART_ITEMS"; payload: CartItem[], cartKey: string }
+  | { type: "CLEAR_CART", cartKey: string };
 
 
 export type ContextType = {

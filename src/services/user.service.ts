@@ -57,6 +57,13 @@ export const Users = {
       "/users/logout",
       {}
     );
+    const storedUser = JSON.parse(
+      window.localStorage.getItem("_tech_user") || "{}"
+    );
+    const cartKey = storedUser?.name
+      ? `_tech_cart_${storedUser.name}`
+      : "_tech_cart";
+    window.localStorage.removeItem(cartKey);
     window.localStorage.removeItem("_tech_user");
     window.localStorage.removeItem("_tech_token");
     return logoutUserRes;

@@ -117,6 +117,7 @@ const Product = () => {
     cartDispatch({
       type: actionType,
       payload: {
+        user,
         skuId: displaySku?._id || "",
         quantity: quantity,
         validity: displaySku?.lifetime ? 0 : displaySku?.validity,
@@ -127,6 +128,7 @@ const Product = () => {
         productId: product?._id || "",
         skuPriceId: displaySku?.stripePriceId || "",
       },
+      cartKey: state.user ? `_tech_cart_${state.user.name}` : "_tech_cart",
     });
     setShow(true);
   };
@@ -181,7 +183,10 @@ const Product = () => {
                     text="dark"
                     className="skuBtn cursor-pointer"
                     key={sku._id}
-                    onClick={() => setDisplaySku(sku)}
+                    onClick={() => {
+                      setDisplaySku(sku);
+                      setQuantity(1);
+                    }}
                   >
                     {sku.lifetime
                       ? "Lifetime"
@@ -189,19 +194,20 @@ const Product = () => {
                   </Badge>
                 ))}
           </div>
-          <div className="productSkuZone">
-            <InputNumber
-              min={1}
-              max={displaySku?.stock || 0}
-              controls={true}
-              step={1}
-              defaultValue={quantity}
-              onChange={(value) => setQuantity(Number(value))}
-              disabled={!displaySku?.price}
-              downHandler={<FileMinus fontSize={35} cursor={"pointer"} />}
-              upHandler={<FilePlus fontSize={35} cursor={"pointer"} />}
-            />
-            {/* <Form.Select
+          {user && user?.type !== "admin" &&  (
+            <div className="productSkuZone">
+              <InputNumber
+                min={1}
+                max={displaySku?.stock || 0}
+                controls={true}
+                step={1}
+                value={quantity}
+                onChange={(value) => setQuantity(Number(value))}
+                disabled={!displaySku?.price}
+                downHandler={<FileMinus fontSize={35} cursor={"pointer"} />}
+                upHandler={<FilePlus fontSize={35} cursor={"pointer"} />}
+              />
+              {/* <Form.Select
 							aria-label='Default select example'
 							className='selectValidity'
 						>
@@ -210,17 +216,17 @@ const Product = () => {
 							<option value='2'>Two</option>
 							<option value='3'>Three</option>
 						</Form.Select> */}
-            {/* {user?.type !== 'admin' && ( */}
-            <Button
-              variant="primary"
-              className="cartBtn"
-              onClick={handleCart}
-              disabled={!displaySku?.price}
-            >
-              <BagCheckFill className="cartIcon" />
-              {existingItem ? "Update cart" : "Add to cart"}
-            </Button>
-          </div>
+              <Button
+                variant="primary"
+                className="cartBtn"
+                onClick={handleCart}
+                disabled={!displaySku?.price}
+              >
+                <BagCheckFill className="cartIcon" />
+                {existingItem ? "Update cart" : "Add to cart"}
+              </Button>
+            </div>
+          )}
         </Col>
       </Row>
       <br />

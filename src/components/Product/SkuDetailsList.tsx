@@ -3,12 +3,12 @@ import { Badge, Button, Table } from "react-bootstrap";
 import { Archive, Pen } from "react-bootstrap-icons";
 import { Products } from "../../services/product.service";
 import { ISkuDetailsListProps } from "../../interfaces/skuDetails.interface";
+import { SkuDetail } from "../../interfaces/products.interface";
 import { getFormatedStringFromDays } from "../../utils/formatStringFromDays";
-// import SkuDetailsForm from "./SkuDetailsForm";
+import SkuDetailsForm from "./SkuDetailsForm";
 // import SkuDetailsLicense from "./SkuDetailsLicense";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import Swal from "sweetalert2";
-import { SkuDetail } from "../../interfaces/products.interface";
 
 const SkuDetailsList: FC<ISkuDetailsListProps> = ({
   skuDetails: allSkuDetails,
@@ -63,7 +63,10 @@ const SkuDetailsList: FC<ISkuDetailsListProps> = ({
         <>
           <Button
             variant="secondary"
-            onClick={() => setSkuDetailsFormShow(true)}
+            onClick={() => {
+              setSkuIdForUpdate("");
+              setSkuDetailsFormShow(true);
+            }}
           >
             Add SKU Details
           </Button>
@@ -142,16 +145,16 @@ const SkuDetailsList: FC<ISkuDetailsListProps> = ({
         </>
       )}
 
-      {/* {skuDetailsFormShow && (
+      {skuDetailsFormShow && (
         <SkuDetailsForm
-          setSkuDetailsFormShow={setSkuDetailsFormShow}
-          setAllSkuDetails={setAllSkuDetails}
-          allSkuDetails={allSkuDetails}
           productId={productId}
+          setSkuDetailsFormShow={setSkuDetailsFormShow}
+          allSkuDetails={allSkuDetails}
+          setAllSkuDetails={setAllSkuDetails}
           skuIdForUpdate={skuIdForUpdate}
           setSkuIdForUpdate={setSkuIdForUpdate}
         />
-      )} */}
+      )}
 
       {/* {licensesListFor && (
         <SkuDetailsLicense

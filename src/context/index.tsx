@@ -31,7 +31,7 @@ export const useAppContext = () => {
     throw new Error("useAppContext must be used within a Provider");
   }
   return context;
-}
+};
 
 const rootReducer = (state: State, action: Action) => {
   switch (action.type) {
@@ -55,82 +55,67 @@ const rootReducer = (state: State, action: Action) => {
 };
 
 const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
+  let updatedCart;
+
   switch (action.type) {
     case "ADD_ITEM":
-      const cartItems = [...state, action.payload];
-      window.localStorage.setItem("_tech_cart", JSON.stringify(cartItems));
-      return cartItems;
+      updatedCart = [...state, action.payload];
+      localStorage.setItem(action.cartKey || "_tech_cart", JSON.stringify(updatedCart));
+      return updatedCart;
+
     case "REMOVE_ITEM":
-      const newCartItems = state.filter(
-        (item: { skuId: string }) => item.skuId !== action.payload?.skuId
-      );
-      window.localStorage.setItem("_tech_cart", JSON.stringify(newCartItems));
-      return newCartItems;
+      updatedCart = state.filter((item) => item.skuId !== action.payload?.skuId);
+      localStorage.setItem(action.cartKey || "_tech_cart", JSON.stringify(updatedCart));
+      return updatedCart;
+
     case "UPDATE_CART":
-      const updatedCartItems = state.map((item: any) => {
-        if (item.skuId === action.payload?.skuId) {
-          return action.payload;
-        }
-        return item;
-      });
-      window.localStorage.setItem(
-        "_tech_cart",
-        JSON.stringify(updatedCartItems)
+      updatedCart = state.map((item) =>
+        item.skuId === action.payload?.skuId ? action.payload : item
       );
-      return updatedCartItems;
+      localStorage.setItem(action.cartKey || "_tech_cart", JSON.stringify(updatedCart));
+      return updatedCart;
+
     case "GET_CART_ITEMS":
       return action.payload;
+
     case "CLEAR_CART":
-      window.localStorage.removeItem("_tech_cart");
+      localStorage.removeItem(action.cartKey || "_tech_cart");
       return [];
+
     default:
       return state;
   }
 };
+
 
 const Provider = ({ children }: Props) => {
   const [state, dispatch] = useReducer(rootReducer, initialState);
   const [cartItems, cartDispatch] = useReducer(cartReducer, []);
   const router = useRouter();
 
+  const cartKey = state.user ? `_tech_cart_${state.user.name}` : "_tech_cart";
+
   useEffect(() => {
     const storedUser = localStorage.getItem("_tech_user");
     const storedToken = localStorage.getItem("_tech_token");
     if (storedUser && storedToken) {
+      const user = JSON.parse(storedUser);
       dispatch({
         type: "LOGIN",
         payload: {
           token: storedToken ? storedToken : null,
-          user: storedUser ? JSON.parse(storedUser) : null,
+          user: user,
         },
       });
+
+      const storedCart = localStorage.getItem(cartKey);
+      cartDispatch({
+        type: "GET_CART_ITEMS",
+        payload: storedCart ? JSON.parse(storedCart) : [],
+        cartKey: cartKey,
+      });
     }
-
-    const storedCart = localStorage.getItem("_tech_cart");
-    cartDispatch({
-      type: "GET_CART_ITEMS",
-      payload: storedCart ? JSON.parse(storedCart) : [],
-    });
-
-    // const getCsrfToken = async () => {
-    //   try {
-    //     const { success, message, result }: ResponsePayload = await requests.get("/csrf-token");
-    //     const csrfToken = result;
-
-    //     if (!csrfToken || typeof csrfToken !== "string") {
-    //       throw new Error("CSRF Token not found or invalid");
-    //     }
-
-    //     axios.defaults.headers.common["X-CSRF-TOKEN"] = csrfToken;
-
-    //     console.log("CSRF Token:", csrfToken);
-    //     console.log('CSRF Token', csrfToken, axios.defaults.headers);
-    //   } catch (error) {
-    //     console.error("Error fetching CSRF token:", error);
-    //   }
-    // };
-    // getCsrfToken();
-  }, []);
+  }, [cartKey]);
 
   useEffect(() => {
     const interceptor = axios.interceptors.response.use(
@@ -147,7 +132,7 @@ const Provider = ({ children }: Props) => {
               .then(() => {
                 console.log("/401 error > logout");
                 dispatch({ type: "LOGOUT" });
-                localStorage.removeItem("_tech_user");
+                localStorage.removeItem(cartKey || "_tech_user");
                 router.push("/auth");
               })
               .catch((err) => {

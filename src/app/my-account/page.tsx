@@ -11,7 +11,7 @@ import AccountDetails from "../../components/MyAccount/AccountDetails";
 // import AllOrders from '../components/MyAccount/AllOrders';
 
 const MyAccountPage = () => {
-  const { state, dispatch } = useAppContext();
+  const { state, dispatch, cartDispatch } = useAppContext();
 
   const user = state?.user;
   const token = state?.token;
@@ -24,12 +24,21 @@ const MyAccountPage = () => {
       dispatch({
         type: "LOGOUT",
       });
+      cartDispatch({
+        type: "CLEAR_CART",
+        cartKey: state.user ? `_tech_cart_${state.user.name}` : "_tech_cart",
+      });
       const { success, message }: ResponsePayload = await Users.logoutUser();
       if (!success) throw new Error(message);
 
       localStorage.removeItem("_tech_user");
+      localStorage.removeItem("_tech_token");
+      localStorage.removeItem(
+        state.user ? `_tech_cart_${state.user.name}` : "_tech_cart"
+      );
+
       showSuccessToast(message);
-      router.push("/auth");
+      router.replace("/auth");
     } catch (error: any) {
       showErrorToast(
         error.response?.data?.errorResponse.message || error.message
