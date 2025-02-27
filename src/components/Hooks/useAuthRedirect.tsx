@@ -13,9 +13,7 @@ export const useAuthRedirect = (validateUser: (user: User) => boolean) => {
   useEffect(() => {
     if (user === undefined) return;
     if (!validateUser(user)) {
-      setTimeout(() => {
-        router.replace("/auth");
-      }, 1000);
+      router.replace("/auth");
     }
   }, [user, router, validateUser]);
 

@@ -6,9 +6,10 @@ import { ISkuDetailsListProps } from "../../interfaces/skuDetails.interface";
 import { SkuDetail } from "../../interfaces/products.interface";
 import { getFormatedStringFromDays } from "../../utils/formatStringFromDays";
 import SkuDetailsForm from "./SkuDetailsForm";
-// import SkuDetailsLicense from "./SkuDetailsLicense";
+import SkuDetailsLicense from "./SkuDetailsLicense";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import Swal from "sweetalert2";
+
 
 const SkuDetailsList: FC<ISkuDetailsListProps> = ({
   skuDetails: allSkuDetails,
@@ -156,13 +157,13 @@ const SkuDetailsList: FC<ISkuDetailsListProps> = ({
         />
       )}
 
-      {/* {licensesListFor && (
+      {licensesListFor && (
         <SkuDetailsLicense
           licensesListFor={licensesListFor}
           setLicensesListFor={setLicensesListFor}
           productId={productId}
         />
-      )} */}
+      )}
     </>
   );
 };

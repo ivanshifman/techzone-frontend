@@ -21,13 +21,6 @@ const MyAccountPage = () => {
 
   const logoutHandler = async () => {
     try {
-      dispatch({
-        type: "LOGOUT",
-      });
-      cartDispatch({
-        type: "CLEAR_CART",
-        cartKey: state.user ? `_tech_cart_${state.user.name}` : "_tech_cart",
-      });
       const { success, message }: ResponsePayload = await Users.logoutUser();
       if (!success) throw new Error(message);
 
@@ -36,6 +29,14 @@ const MyAccountPage = () => {
       localStorage.removeItem(
         state.user ? `_tech_cart_${state.user.name}` : "_tech_cart"
       );
+      
+      dispatch({
+        type: "LOGOUT",
+      });
+      cartDispatch({
+        type: "CLEAR_CART",
+        cartKey: state.user ? `_tech_cart_${state.user.name}` : "_tech_cart",
+      });
 
       showSuccessToast(message);
       router.replace("/auth");
