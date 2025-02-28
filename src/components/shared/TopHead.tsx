@@ -17,21 +17,22 @@ import {
 import { PersonCircle, Search } from "react-bootstrap-icons";
 import styles from "../../styles/Home.module.css";
 import { useProducts } from "../Hooks/useProducts";
+import CartOffCanvas from "./CartOffCanvas";
 
 const TopHead = () => {
   const { state, cartItems } = useAppContext();
   const { uniqueBasesTypes } = useProducts();
 
-  const [searchText, setSearchText] = useState("");
-  const [baseType, setBaseType] = useState("Applications");
-  const [total, setTotal] = useState(0);
-  const [itemCount, setItemCount] = useState(0);
+  const [searchText, setSearchText] = useState<string>("");
+  const [baseType, setBaseType] = useState<string>("Applications");
+  const [total, setTotal] = useState<number>(0);
+  const [itemCount, setItemCount] = useState<number>(0);
+  const [show, setShow] = useState<boolean>(false);
 
   const user = state?.user;
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  
 
   const navigateTo = (path: string) => router.push(path);
 
@@ -121,7 +122,6 @@ const TopHead = () => {
               {uniqueBasesTypes.map((type) => (
                 <NavDropdown.Item
                   key={type}
-                  eventKey={type}
                   onClick={() => handleBaseTypeChange(type)}
                 >
                   {type}
@@ -129,13 +129,19 @@ const TopHead = () => {
               ))}
             </NavDropdown>
           </Nav>
-          <Nav>
-            <Nav.Link className={styles.cartItems} onClick={() => {}}>
-              Items: <Badge bg="secondary">{itemCount}</Badge> (USD {total})
-            </Nav.Link>
-          </Nav>
+          {user && user?.type !== "admin" && (
+            <Nav>
+              <Nav.Link
+                className={styles.cartItems}
+                onClick={() => setShow(true)}
+              >
+                Items: <Badge bg="secondary">{itemCount}</Badge> (USD {total})
+              </Nav.Link>
+            </Nav>
+          )}
         </Navbar.Collapse>
       </Navbar>
+      <CartOffCanvas setShow={setShow} show={show} items={cartItems}/>
     </>
   );
 };
