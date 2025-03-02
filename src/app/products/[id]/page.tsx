@@ -20,7 +20,7 @@ import {
 } from "react-bootstrap";
 import InputNumber from "rc-input-number";
 import { BagCheckFill, FileMinus, FilePlus } from "react-bootstrap-icons";
-// import CartOffCanvas from "../../components/CartOffCanvas";
+import CartOffCanvas from "../../../components/shared/CartOffCanvas";
 import SkuDetailsList from "../../../components/Product/SkuDetailsList";
 import ReviewSection from "../../../components/Product/ReviewSection";
 import ProductItem from "../../../components/Products/ProductItem";
@@ -37,7 +37,7 @@ const Product = () => {
   const user = state?.user;
 
   const [show, setShow] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
@@ -207,15 +207,6 @@ const Product = () => {
                 downHandler={<FileMinus fontSize={35} cursor={"pointer"} />}
                 upHandler={<FilePlus fontSize={35} cursor={"pointer"} />}
               />
-              {/* <Form.Select
-							aria-label='Default select example'
-							className='selectValidity'
-						>
-							<option>Select validity</option>
-							<option value='1'>One</option>
-							<option value='2'>Two</option>
-							<option value='3'>Three</option>
-						</Form.Select> */}
               <Button
                 variant="primary"
                 className="cartBtn"
@@ -328,7 +319,7 @@ const Product = () => {
           </Col>
         ))}
       </Row>
-      {/* <CartOffCanvas setShow={setShow} show={show} /> */}
+      <CartOffCanvas setShow={setShow} show={show} items={cartItems}/>
     </>
   );
 };

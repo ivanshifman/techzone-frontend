@@ -6,9 +6,9 @@ import { Users } from "../../services/user.service";
 import { ResponsePayload } from "../../services/api";
 import { Col, Nav, Row, Tab } from "react-bootstrap";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
-import ProtectedRoute from "../../components/shared/ProtectedRoute";
 import AccountDetails from "../../components/MyAccount/AccountDetails";
-// import AllOrders from '../components/MyAccount/AllOrders';
+import AllOrders from "../../components/MyAccount/AllOrders";
+import ProtectedRoute from "../../components/shared/ProtectedRoute";
 
 const MyAccountPage = () => {
   const { state, dispatch, cartDispatch } = useAppContext();
@@ -29,7 +29,7 @@ const MyAccountPage = () => {
       localStorage.removeItem(
         state.user ? `_tech_cart_${state.user.name}` : "_tech_cart"
       );
-      
+
       dispatch({
         type: "LOGOUT",
       });
@@ -76,7 +76,9 @@ const MyAccountPage = () => {
                   state={state}
                 />
               </Tab.Pane>
-              <Tab.Pane eventKey="second">{/* <AllOrders /> */}</Tab.Pane>
+              <Tab.Pane eventKey="second">
+                <AllOrders />
+              </Tab.Pane>
             </Tab.Content>
           </Col>
         </Row>

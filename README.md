@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TechZone Frontend
 
-## Getting Started
+TechZone Frontend is the user interface of the TechZone e-commerce platform, developed with Next.js 15 and React 19. This application consumes the TechZone Backend API to provide a complete online shopping experience, including authentication, product management, and payment processing.
 
-First, run the development server:
+## 🛍️ Description
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+TechZone is an e-commerce platform designed for selling technology products. It features a modern and optimized interface to ensure smooth and efficient navigation.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔑 Key Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **User Authentication and Management**: Users can sign up, log in, and manage their personal accounts.
+- **Product Catalog**: Browse products with advanced filtering and search options.
+- **Shopping Cart**: Users can add, update, and remove products before completing their purchase.
+- **Payment Processing with Stripe**: Secure checkout process managed via Stripe on the backend.
+- **Ratings and Reviews**: Users can leave feedback on purchased products.
+- **Optimized Pagination**: Enhances the user experience when exploring the product catalog.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Admin Features
 
-## Learn More
+Administrators have access to advanced tools for managing the e-commerce platform:
 
-To learn more about Next.js, take a look at the following resources:
+- **Product Upload and Editing**: Intuitive interface to add new products or modify existing ones.
+- **User Management**: Control over customer and admin accounts.
+- **Order Monitoring**: Review and update order statuses in real time.
+- **Stock Control**: Modify and update product availability.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎨 User Experience
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The application offers a responsive and accessible interface, developed with React Bootstrap to ensure a seamless experience across different devices. Additionally, notifications with React Toastify and alerts with SweetAlert2 enhance user interaction.
 
-## Deploy on Vercel
+## 📡 Backend Connectivity
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+TechZone Frontend communicates with TechZone Backend via Axios, enabling efficient data management and optimized loading of products and orders in real time.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## ✨ Developed with Next.js and a passion for technology.
+
+## Techzone backend project [Techzone backend](https://github.com/ivanshifman/techzone-backend)
+
+### Author
+
+- Ivan Ezequiel Shifman
+
+- Visit my profile en [LinkedIn](https://ar.linkedin.com/in/iv%C3%A1n-ezequiel-shifman-042b0726a)
