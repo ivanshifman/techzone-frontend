@@ -24,6 +24,7 @@ export interface CartItem {
     user: User,
     skuId: string;
     quantity: number;
+    stock: number;
     validity?: number;
     lifetime: boolean;
     price: number;

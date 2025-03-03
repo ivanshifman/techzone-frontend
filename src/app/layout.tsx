@@ -27,7 +27,7 @@ export default function RootLayout({
           <Container>
             <ToastContainer />
             <TopHead />
-            {children}
+            <main>{children}</main>
             <Footer />
           </Container>
         </Provider>

@@ -141,7 +141,7 @@ const TopHead = () => {
           )}
         </Navbar.Collapse>
       </Navbar>
-      <CartOffCanvas setShow={setShow} show={show} items={cartItems}/>
+      <CartOffCanvas setShow={setShow} show={show} items={cartItems} />
     </>
   );
 };

@@ -38,7 +38,7 @@ const Product = () => {
 
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(0);
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [userType, setUserType] = useState("customer");
@@ -120,6 +120,7 @@ const Product = () => {
         user,
         skuId: displaySku?._id || "",
         quantity: quantity,
+        stock: displaySku?.stock || 0,
         validity: displaySku?.lifetime ? 0 : displaySku?.validity,
         lifetime: displaySku?.lifetime || false,
         price: displaySku?.price || 0,
@@ -185,7 +186,7 @@ const Product = () => {
                     key={sku._id}
                     onClick={() => {
                       setDisplaySku(sku);
-                      setQuantity(1);
+                      setQuantity(sku.stock > 1 ? 1 : 0);
                     }}
                   >
                     {sku.lifetime
@@ -194,16 +195,16 @@ const Product = () => {
                   </Badge>
                 ))}
           </div>
-          {user && user?.type !== "admin" &&  (
+          {user && user?.type !== "admin" && (
             <div className="productSkuZone">
               <InputNumber
-                min={1}
-                max={displaySku?.stock || 0}
+                min={displaySku?.stock != null && displaySku.stock >= 1 ? 1 : 0}
+                max={displaySku?.stock ?? 0}
                 controls={true}
                 step={1}
                 value={quantity}
                 onChange={(value) => setQuantity(Number(value))}
-                disabled={!displaySku?.price}
+                disabled={!displaySku?.price || displaySku?.stock === 0}
                 downHandler={<FileMinus fontSize={35} cursor={"pointer"} />}
                 upHandler={<FilePlus fontSize={35} cursor={"pointer"} />}
               />
@@ -211,7 +212,7 @@ const Product = () => {
                 variant="primary"
                 className="cartBtn"
                 onClick={handleCart}
-                disabled={!displaySku?.price}
+                disabled={!displaySku?.price || quantity === 0}
               >
                 <BagCheckFill className="cartIcon" />
                 {existingItem ? "Update cart" : "Add to cart"}
@@ -319,7 +320,7 @@ const Product = () => {
           </Col>
         ))}
       </Row>
-      <CartOffCanvas setShow={setShow} show={show} items={cartItems}/>
+      <CartOffCanvas setShow={setShow} show={show} items={cartItems} />
     </>
   );
 };
