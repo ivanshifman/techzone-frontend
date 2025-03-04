@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { FC, Suspense, useState } from "react";
+import { FC, useState } from "react";
 import { Button, Offcanvas } from "react-bootstrap";
 import { useAppContext } from "../../context";
 import { Orders } from "../../services/order.service";
@@ -45,7 +45,7 @@ const CartOffCanvas: FC<ICartOffCanvasProps> = ({ show, setShow, items }) => {
   };
 
   return (
-    <Suspense>
+    <>
       <Offcanvas show={show} onHide={handleClose} placement="end">
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>Shoping Cart</Offcanvas.Title>
@@ -69,7 +69,7 @@ const CartOffCanvas: FC<ICartOffCanvasProps> = ({ show, setShow, items }) => {
           </Button>
         </Offcanvas.Body>
       </Offcanvas>
-    </Suspense>
+    </>
   );
 };
 

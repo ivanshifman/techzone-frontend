@@ -9,7 +9,6 @@ import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import AccountDetails from "../../components/MyAccount/AccountDetails";
 import AllOrders from "../../components/MyAccount/AllOrders";
 import ProtectedRoute from "../../components/shared/ProtectedRoute";
-import { Suspense } from "react";
 
 const MyAccountPage = () => {
   const { state, dispatch, cartDispatch } = useAppContext();
@@ -49,7 +48,6 @@ const MyAccountPage = () => {
   };
 
   return (
-    <Suspense fallback={null}>
     <ProtectedRoute>
       <Tab.Container id="left-tabs-example" defaultActiveKey="first">
         <Row>
@@ -86,8 +84,6 @@ const MyAccountPage = () => {
         </Row>
       </Tab.Container>
     </ProtectedRoute>
-    </Suspense>
-    
   );
 };
 

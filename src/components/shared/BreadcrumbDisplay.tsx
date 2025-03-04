@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { FC, memo, Suspense } from "react";
+import { FC, memo } from "react";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
 import { IPropsBreadcrumb } from "../../interfaces/breadcrumbItem.interface";
 
@@ -7,7 +7,6 @@ const BreadcrumbDisplay: FC<IPropsBreadcrumb> = memo(({ childrens = [] }) => {
   const router = useRouter();
 
   return (
-    <Suspense>
     <Breadcrumb className="mt-3">
       {childrens?.map(({ active, href, text }) => (
         <Breadcrumb.Item
@@ -20,8 +19,6 @@ const BreadcrumbDisplay: FC<IPropsBreadcrumb> = memo(({ childrens = [] }) => {
         </Breadcrumb.Item>
       ))}
     </Breadcrumb>
-    </Suspense>
-    
   );
 });
 

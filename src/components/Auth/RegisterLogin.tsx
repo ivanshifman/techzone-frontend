@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, Suspense, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "../../context";
@@ -171,7 +171,6 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
   };
 
   return (
-    <Suspense fallback ={null}>
     <Card>
       <Card.Header>{isRegisterForm ? "Register" : "Login"}</Card.Header>
       <Card.Body>
@@ -336,8 +335,6 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
         )}
       </Card.Body>
     </Card>
-    </Suspense>
-    
   );
 };
 

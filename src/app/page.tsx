@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppContext } from "../context";
 import axios from "axios";
 import { Product } from "../interfaces/products.interface";
@@ -71,7 +71,7 @@ const Home = () => {
   }
 
   return (
-    <Suspense fallback={<Loading />}>
+    <>
       <h3 className={styles.productCats}>Latest Products</h3>
       {products.latestProducts.length > 0 ? (
         <Row xs={1} md={2} lg={4} className="g-4 my-4">
@@ -128,7 +128,7 @@ const Home = () => {
           </p>
         </div>
       )}
-    </Suspense>
+    </>
   );
 };
 

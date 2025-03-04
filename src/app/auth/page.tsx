@@ -5,7 +5,6 @@ import RegisterLogin from "../../components/Auth/RegisterLogin";
 
 const AuthPage = () => {
   return (
-    <Suspense fallback={<Loading />}>
     <Row>
       <Col sm={6} className="mt-3">
         <RegisterLogin />
@@ -14,8 +13,6 @@ const AuthPage = () => {
         <RegisterLogin isRegisterForm={true} />
       </Col>
     </Row>
-    </Suspense>
-    
   );
 };
 

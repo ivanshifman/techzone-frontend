@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, Suspense, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -67,7 +67,7 @@ const Order: FC = () => {
     if (!licenses.length) return "Not Found";
 
     return (
-      <Suspense fallback={<Loading />}>
+      <>
         {licenses.map((license, index) => (
           <span key={index}>
             {typeof license === "string"
@@ -88,7 +88,7 @@ const Order: FC = () => {
         >
           <Clipboard />
         </Button>
-      </Suspense>
+      </>
     );
   };
 

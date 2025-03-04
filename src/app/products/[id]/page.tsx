@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Products } from "../../../services/product.service";
 import { useAppContext } from "../../../context";
 import type { Product } from "../../../interfaces/products.interface";
@@ -137,7 +137,7 @@ const Product = () => {
   if (loading) return <Loading />;
 
   return (
-    <Suspense fallback={<Loading />}>
+    <>
       <Row className="firstRow">
         <Col sm={4}>
           <Card className="productImgCard">
@@ -321,7 +321,7 @@ const Product = () => {
         ))}
       </Row>
       <CartOffCanvas setShow={setShow} show={show} items={cartItems} />
-    </Suspense>
+    </>
   );
 };
 
