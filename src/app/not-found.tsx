@@ -1,10 +1,6 @@
 "use client";
 
-import dynamic from "next/dynamic";
-
-const ErrorTemplate = dynamic(() => import("../components/Error/ErrorTemplate"), {
-  ssr: false,
-});
+import ErrorTemplate from "../components/Error/ErrorTemplate";
 
 const NotFoundPage = () => {
   return (
