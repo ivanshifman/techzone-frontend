@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FC, useState } from "react";
+import { FC, Suspense, useState } from "react";
 import { Products } from "../../services/product.service";
 import { SkuDetail } from "../../interfaces/products.interface";
 import { IProductItemProps } from "../../interfaces/productItem.interface";
@@ -80,6 +80,7 @@ const ProductItem: FC<IProductItemProps> = ({
   };
 
   return (
+    <Suspense fallback={null}>
     <Col>
       <Card className="productCard">
         <Card.Img
@@ -169,6 +170,8 @@ const ProductItem: FC<IProductItemProps> = ({
         </Card.Body>
       </Card>
     </Col>
+    </Suspense>
+    
   );
 };
 

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useAuthRedirect } from "../Hooks/useAuthRedirect";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
 const AdminProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const user = useAuthRedirect((user) =>
@@ -20,7 +20,7 @@ const AdminProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   if (!user?.email || user?.type !== "admin") return null;
 
-  return <>{children}</>;
+  return <Suspense>{children}</Suspense>;
 };
 
 export default AdminProtectedRoute;

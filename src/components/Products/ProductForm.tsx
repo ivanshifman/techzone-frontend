@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FC, useEffect, useState } from "react";
+import { FC, Suspense, useEffect, useState } from "react";
 import { Products } from "../../services/product.service";
 import { ResponsePayload } from "../../services/api";
 import { Product } from "../../interfaces/products.interface";
@@ -192,6 +192,7 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
   };
 
   return (
+    <Suspense fallback={null}>
     <Card className="updateProductCard p-3 mt-4">
       <Row>
         <h4 className="text-center productFormHeading">Product Details Form</h4>
@@ -559,6 +560,8 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
         </Col>
       </Row>
     </Card>
+    </Suspense>
+    
   );
 };
 

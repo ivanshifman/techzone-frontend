@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FC, useEffect } from "react";
+import { FC, Suspense, useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
 import { useAppContext } from "../../context";
 import { IOrderMessage } from "../../interfaces/orderMessage.interface";
@@ -38,6 +38,7 @@ const OrderMessage: FC<IOrderMessage> = ({ title, message, textColor }) => {
   };
 
   return (
+    <Suspense fallback={null}>
     <Row>
       <Col md={{ span: 6, offset: 3 }}>
         <div className="jumbotron text-center">
@@ -59,6 +60,8 @@ const OrderMessage: FC<IOrderMessage> = ({ title, message, textColor }) => {
         </div>
       </Col>
     </Row>
+    </Suspense>
+    
   );
 };
 
