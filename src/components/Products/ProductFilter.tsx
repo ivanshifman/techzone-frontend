@@ -3,7 +3,6 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { FC, Suspense, useEffect, useMemo, useState } from "react";
 import { Card, Dropdown, DropdownButton, ListGroup } from "react-bootstrap";
-import Loading from "../shared/Loading";
 
 interface ProductFilterProps {
   platformsTypes: string[];
@@ -61,7 +60,7 @@ const ProductFilter: FC<ProductFilterProps> = ({
   };
 
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<div>Loading...</div>}>
     <Card className="mb-3">
       <Card.Header>Filter By</Card.Header>
       <ListGroup variant="flush">
