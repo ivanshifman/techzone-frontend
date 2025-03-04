@@ -2,8 +2,6 @@
 
 import OrderMessage from "../../components/Order/OrderMessage";
 
-export const dynamic = "force-dynamic";
-
 const OrderSuccess = () => {
   return (
     <OrderMessage
