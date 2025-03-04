@@ -65,7 +65,6 @@ const SkuDetailsLicense: FC<ISkuDetailsLicenseProps> = ({
       if (!success) throw new Error(message);
       setLicenses(result);
     } catch (error: any) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       showErrorToast(
         error?.response?.data?.errorResponse.message || error?.message
       );
@@ -94,7 +93,6 @@ const SkuDetailsLicense: FC<ISkuDetailsLicenseProps> = ({
 
       await fetchAllLicenses(productId, licensesListFor);
     } catch (error: any) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       showErrorToast(
         error?.response?.data?.errorResponse.message || error?.message
       );
@@ -137,7 +135,6 @@ const SkuDetailsLicense: FC<ISkuDetailsLicenseProps> = ({
       setAddFormShow(false);
       setLicenseIdForUpdate("");
     } catch (error: any) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       showErrorToast(
         error?.response?.data?.errorResponse.message || error?.message
       );

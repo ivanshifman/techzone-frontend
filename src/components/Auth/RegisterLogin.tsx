@@ -83,7 +83,6 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
       }
       showSuccessToast(message);
     } catch (error: any) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const errorMessage =
         error?.response?.data?.errorResponse.message ||
         error?.message ||
@@ -114,7 +113,6 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
       if (!success) throw new Error(message);
       showSuccessToast(message);
     } catch (error: any) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       showErrorToast(
         error.response?.data?.errorResponse.message || error.message
       );
@@ -143,7 +141,6 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
       setValue("email", "");
       setValue("password", "");
     } catch (error: any) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       showErrorToast(
         error.response?.data?.errorResponse.message || error.message
       );
@@ -165,7 +162,6 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
       if (!success) throw new Error(message);
       showSuccessToast(message);
     } catch (error: any) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       showErrorToast(
         error.response?.data?.errorResponse.message || error.message
       );

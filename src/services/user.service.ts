@@ -7,13 +7,10 @@ export const Users = {
   getUsers: async (): Promise<ResponsePayload> =>
     requests.get<ResponsePayload>("/users"),
 
-  registerNewUser: async (user: any): Promise<ResponsePayload> => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return requests.post<ResponsePayload>("/users", { ...user, type: "customer" });
-  },
+  registerNewUser: async (user: any): Promise<ResponsePayload> =>
+    requests.post<ResponsePayload>("/users", { ...user, type: "customer" }),
 
   loginUser: async (user: any): Promise<ResponsePayload> => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const loginUserRes = await requests.post<ResponsePayload>(
       "/users/login",
       user
@@ -30,7 +27,6 @@ export const Users = {
   },
 
   updateUser: async (user: any, id: string): Promise<ResponsePayload> => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateUserRes = await requests.patch<ResponsePayload>(
       `/users/update-name-password/${id}`,
       user

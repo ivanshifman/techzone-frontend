@@ -54,7 +54,6 @@ export const useProducts = () => {
         setMetadata(result?.metadata || {});
       }
     } catch (error: any) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (error.name !== "CanceledError" && error.message !== "canceled") {
         console.error("API Error:", error);
       }
