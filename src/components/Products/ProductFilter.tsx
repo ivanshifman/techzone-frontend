@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter, useSearchParams } from "next/navigation";
 import { FC, Suspense, useEffect, useMemo, useState } from "react";
 import { Card, Dropdown, DropdownButton, ListGroup } from "react-bootstrap";

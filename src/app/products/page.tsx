@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useAppContext } from "../../context";
 import { useProducts } from "../../components/Hooks/useProducts";
 import { Col, Dropdown, DropdownButton, Row } from "react-bootstrap";
@@ -20,7 +20,6 @@ const AllProducts = () => {
     products,
     fetchProducts,
     metadata,
-    loading,
     uniqueCategories,
     uniquePlatformsTypes,
   } = useProducts();
@@ -63,10 +62,8 @@ const AllProducts = () => {
     await fetchProducts(signal);
   };
 
-  if (loading) return <Loading />;
-
   return (
-    <>
+    <Suspense fallback={<Loading />}>
       <Row>
         <Col md={8}>
           <BreadcrumbDisplay
@@ -142,7 +139,7 @@ const AllProducts = () => {
           <PaginationDisplay metadata={metadata} />
         </Col>
       </Row>
-    </>
+    </Suspense>
   );
 };
 
