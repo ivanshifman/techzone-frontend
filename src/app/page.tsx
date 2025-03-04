@@ -11,6 +11,8 @@ import styles from "../styles/Home.module.css";
 import ProductItem from "../components/Products/ProductItem";
 import Loading from "../components/shared/Loading";
 
+export const dynamic = "force-dynamic";
+
 const Home = () => {
   const { state } = useAppContext();
 
