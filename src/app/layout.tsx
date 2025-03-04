@@ -6,6 +6,8 @@ import { Container } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
 import TopHead from "../components/shared/TopHead";
 import Footer from "../components/shared/Footer";
+import { Suspense } from "react";
+import ProgressBarProvider from "../components/ProgressBar/ProgressBar";
 
 export const metadata = {
   title: "TechZone",
@@ -27,7 +29,11 @@ export default function RootLayout({
           <Container>
             <ToastContainer />
             <TopHead />
-            <main>{children}</main>
+            <Suspense>
+              <ProgressBarProvider>
+                <main>{children}</main>
+              </ProgressBarProvider>
+            </Suspense>
             <Footer />
           </Container>
         </Provider>
