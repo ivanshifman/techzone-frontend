@@ -78,6 +78,7 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
           }
         }
       } catch (error: any) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (error.response?.status === 404) {
           showErrorToast(
             error?.response?.data?.errorResponse.message || error?.message
@@ -178,6 +179,7 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
       showSuccessToast(message);
       router.push("/");
     } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       showErrorToast(
         error.response?.data?.errorResponse.message || error.message
       );

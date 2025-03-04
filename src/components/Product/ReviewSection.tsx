@@ -63,6 +63,7 @@ const ReviewSection: FC<IReviewProps> = ({ reviews, productId }) => {
       setFilteredReviews(result?.feedbackDetails);
       reset(initialState);
     } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       showErrorToast(
         error?.response?.data?.errorResponse?.message || error?.message
       );
@@ -86,6 +87,7 @@ const ReviewSection: FC<IReviewProps> = ({ reviews, productId }) => {
         setFormShown(false);
       }
     } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       showErrorToast(
         error?.response?.data?.errorResponse?.message || error?.message
       );

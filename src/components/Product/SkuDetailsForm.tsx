@@ -91,6 +91,7 @@ const SkuDetailsForm: FC<ISkuDetailsFormProps> = ({
       setSkuIdForUpdate("");
       setAllSkuDetails(result?.skuDetails);
     } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       showErrorToast(
         error?.response?.data?.errorResponse.message || error?.message
       );

@@ -43,6 +43,7 @@ const Order: FC = () => {
           setOrder(result);
         }
       } catch (error: any) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (
           (error.response?.status === 404 || error.response?.status === 400) &&
           !signal?.aborted

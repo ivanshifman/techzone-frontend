@@ -36,6 +36,7 @@ const CartOffCanvas: FC<ICartOffCanvasProps> = ({ show, setShow, items }) => {
         router.push(result);
       }
     } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       showErrorToast(
         error.response?.data?.errorResponse.message || error.message
       );

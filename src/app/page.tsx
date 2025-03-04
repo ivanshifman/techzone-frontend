@@ -42,6 +42,7 @@ const Home = () => {
         data?.result[0] || { latestProducts: [], topRatedProducts: [] }
       );
     } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (!axios.isCancel(error)) {
         showErrorToast(
           error?.response?.data?.errorResponse.message || error?.message

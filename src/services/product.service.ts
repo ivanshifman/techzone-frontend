@@ -8,6 +8,7 @@ export const Products = {
     serverSide: boolean = false,
     signal?: AbortSignal
   ): Promise<ResponsePayload> => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const url = queryString.stringifyUrl({
       url: serverSide ? "" : "/products",
       query: filter,
@@ -59,6 +60,7 @@ export const Products = {
     id: string,
     image: any
   ): Promise<ResponsePayload> => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const uploadProductImageRes = await requests.post<ResponsePayload>(
       `/products/${id}/image`,
       image
@@ -70,6 +72,7 @@ export const Products = {
     productId: string,
     sku: Record<string, any>
   ): Promise<ResponsePayload> => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addSkuRes = await requests.post<ResponsePayload>(
       `/products/${productId}/skus`,
       sku
@@ -82,6 +85,7 @@ export const Products = {
     skuId: string,
     sku: Record<string, any>
   ): Promise<ResponsePayload> => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateSkuRes = await requests.put<ResponsePayload>(
       `/products/${productId}/skus/${skuId}`,
       sku
@@ -114,6 +118,7 @@ export const Products = {
     skuId: string,
     license: Record<string, any>
   ): Promise<ResponsePayload> => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addLicenseRes = await requests.post<ResponsePayload>(
       `/products/${productId}/skus/${skuId}/licenses`,
       license
@@ -127,6 +132,7 @@ export const Products = {
     licenseId: string,
     license: Record<string, any>
   ): Promise<ResponsePayload> => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateLicenseRes = await requests.put<ResponsePayload>(
       `/products/${productId}/skus/${skuId}/licenses/${licenseId}`,
       license
@@ -142,9 +148,11 @@ export const Products = {
   },
 
   addReview: async (
+
     productId: string,
     review: Record<string, any>
   ): Promise<ResponsePayload> => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const addReviewRes = await requests.post<ResponsePayload>(
       `/products/${productId}/reviews`,
       review

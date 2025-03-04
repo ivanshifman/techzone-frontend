@@ -45,6 +45,7 @@ const ProductItem: FC<IProductItemProps> = ({
         showSuccessToast(message);
       }
     } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       showErrorToast(
         error.response?.data?.errorResponse.message || error.message
       );
@@ -71,6 +72,7 @@ const ProductItem: FC<IProductItemProps> = ({
       setImage(result);
       showSuccessToast(message);
     } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       showErrorToast(
         error.response?.data?.errorResponse.message || error.message
       );
@@ -113,6 +115,7 @@ const ProductItem: FC<IProductItemProps> = ({
                   (a.validity ?? 0) - (b.validity ?? 0)
               )
               .map((sku: SkuDetail, key: any) => (
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 <Badge bg="warning" text="dark" className="skuBtn" key={key}>
                   {sku.lifetime
                     ? "Lifetime"

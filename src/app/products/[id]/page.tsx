@@ -80,6 +80,7 @@ const Product = () => {
       setRelatedProducts(result?.relatedProducts || []);
       console.log("producto", result.product);
     } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (error.response?.status === 404 && !signal?.aborted) {
         showErrorToast(
           error?.response?.data?.errorResponse.message || error?.message
@@ -167,6 +168,7 @@ const Product = () => {
             {product?.highlights &&
               product?.highlights.length > 0 &&
               product?.highlights.map((highlight: string, key: any) => (
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 <li key={key}>{highlight}</li>
               ))}
           </ul>
