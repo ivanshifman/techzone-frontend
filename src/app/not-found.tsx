@@ -1,14 +1,9 @@
 "use client";
 
-import ErrorTemplate from "../components/Error/ErrorTemplate";
+import SuspenseNotFound from "../components/Suspense/SuspenseNotFound";
 
 const NotFoundPage = () => {
-  return (
-    <ErrorTemplate
-      title="404 - Page Not Found"
-      message="The page you are looking for does not exist."
-    />
-  );
+  return <SuspenseNotFound />
 };
 
 export default NotFoundPage;

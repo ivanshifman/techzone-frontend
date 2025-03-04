@@ -1,3 +1,5 @@
+"use client";
+
 import  { Suspense } from 'react';
 import AllProducts from '../../app/products/page';
 import Loading from '../shared/Loading';
