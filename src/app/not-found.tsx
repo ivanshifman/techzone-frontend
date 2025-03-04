@@ -2,7 +2,9 @@
 
 import dynamic from "next/dynamic";
 
-const ErrorTemplate = dynamic(() => import("../components/Error/ErrorTemplate"));
+const ErrorTemplate = dynamic(() => import("../components/Error/ErrorTemplate"), {
+  ssr: false,
+});
 
 const NotFoundPage = () => {
   return (
