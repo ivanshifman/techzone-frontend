@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useAppContext } from "../../context/index";
 import {
   Badge,
@@ -77,7 +77,7 @@ const TopHead = () => {
   }, [cartItems]);
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <Row className="mt-3">
         <Col xs={6} md={4}>
           <h3 className={styles.logoHeading} onClick={() => navigateTo("/")}>
@@ -142,7 +142,7 @@ const TopHead = () => {
         </Navbar.Collapse>
       </Navbar>
       <CartOffCanvas setShow={setShow} show={show} items={cartItems} />
-    </>
+    </Suspense>
   );
 };
 

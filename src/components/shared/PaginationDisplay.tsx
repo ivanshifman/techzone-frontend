@@ -1,6 +1,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
-import { FC, useMemo } from "react";
+import { FC, Suspense, useMemo } from "react";
 import { Pagination } from "react-bootstrap";
+import Loading from "./Loading";
 
 interface IPaginationProps {
   metadata: {
@@ -32,7 +33,7 @@ const PaginationDisplay: FC<IPaginationProps> = ({ metadata }) => {
   };
 
   return (
-    <>
+    <Suspense fallback={<Loading />}>
       <Pagination className="float-end mt-3">
         <Pagination.First
           disabled={currentPage === 1}
@@ -70,7 +71,7 @@ const PaginationDisplay: FC<IPaginationProps> = ({ metadata }) => {
           </div>
         </div>
       </div>
-    </>
+    </Suspense>
   );
 };
 

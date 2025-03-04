@@ -1,6 +1,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, Suspense, useEffect, useMemo, useState } from "react";
 import { Card, Dropdown, DropdownButton, ListGroup } from "react-bootstrap";
+import Loading from "../shared/Loading";
 
 interface ProductFilterProps {
   platformsTypes: string[];
@@ -58,6 +59,7 @@ const ProductFilter: FC<ProductFilterProps> = ({
   };
 
   return (
+    <Suspense fallback={<Loading />}>
     <Card className="mb-3">
       <Card.Header>Filter By</Card.Header>
       <ListGroup variant="flush">
@@ -95,6 +97,7 @@ const ProductFilter: FC<ProductFilterProps> = ({
         </ListGroup.Item>
       </ListGroup>
     </Card>
+    </Suspense>
   );
 };
 
