@@ -2,8 +2,6 @@
 
 import ErrorTemplate from "../components/Error/ErrorTemplate";
 
-export const dynamic = "force-dynamic";
-
 const NotFoundPage = () => {
   return (
     <ErrorTemplate

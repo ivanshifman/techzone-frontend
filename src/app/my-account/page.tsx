@@ -10,8 +10,6 @@ import AccountDetails from "../../components/MyAccount/AccountDetails";
 import AllOrders from "../../components/MyAccount/AllOrders";
 import ProtectedRoute from "../../components/shared/ProtectedRoute";
 
-export const dynamic = "force-dynamic";
-
 const MyAccountPage = () => {
   const { state, dispatch, cartDispatch } = useAppContext();
 

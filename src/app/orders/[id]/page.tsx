@@ -20,8 +20,6 @@ import { ISkuDetailsLicense } from "../../../interfaces/skuDetails.interface";
 import { showErrorToast, showSuccessToast } from "../../../utils/toast";
 import Loading from "../../../components/shared/Loading";
 
-export const dynamic = "force-dynamic";
-
 const Order: FC = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
