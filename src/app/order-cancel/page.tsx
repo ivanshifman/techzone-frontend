@@ -2,6 +2,8 @@
 
 import OrderMessage from "../../components/Order/OrderMessage";
 
+export const dynamic = "force-dynamic";
+
 const OrderCancel = () => {
   return (
     <OrderMessage
