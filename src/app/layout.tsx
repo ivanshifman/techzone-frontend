@@ -28,8 +28,8 @@ export default function RootLayout({
         <Provider>
           <Container>
             <ToastContainer />
-            <TopHead />
             <Suspense>
+              <TopHead />
               <ProgressBarProvider>
                 <main>{children}</main>
               </ProgressBarProvider>
