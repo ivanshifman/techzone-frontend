@@ -3,6 +3,8 @@ import { Col, Row } from "react-bootstrap";
 import Loading from "../../components/shared/Loading";
 import RegisterLogin from "../../components/Auth/RegisterLogin";
 
+export const dynamic = "force-dynamic";
+
 const AuthPage = () => {
   return (
     <Suspense fallback={<Loading />}>
