@@ -14,6 +14,8 @@ import ProductItem from "../../components/Products/ProductItem";
 import { Product } from "../../interfaces/products.interface";
 import Loading from "../../components/shared/Loading";
 
+export const dynamic = "force-dynamic";
+
 const AllProducts = () => {
   const { state } = useAppContext();
   const {

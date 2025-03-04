@@ -28,6 +28,8 @@ import Loading from "../../../components/shared/Loading";
 import { showErrorToast } from "../../../utils/toast";
 import { Rating } from "react-simple-star-rating";
 
+export const dynamic = "force-dynamic";
+
 const Product = () => {
   const { cartDispatch, cartItems, state } = useAppContext();
 
