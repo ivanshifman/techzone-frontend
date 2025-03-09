@@ -24,8 +24,6 @@ const SkuDetailsList: FC<ISkuDetailsListProps> = ({
     id: "",
   });
 
-  console.log("allSkuDetails", allSkuDetails);
-
   const deleteHandler = async (skuId: string) => {
     try {
       const { isConfirmed } = await Swal.fire({

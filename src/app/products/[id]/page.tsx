@@ -36,16 +36,16 @@ const Product = () => {
   const productId = Array.isArray(id) ? id[0] : id ?? "";
   const user = state?.user;
 
-  const [show, setShow] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [quantity, setQuantity] = useState(0);
+  const [show, setShow] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
-  const [userType, setUserType] = useState("customer");
+  const [userType, setUserType] = useState<string>("customer");
   const [allSkuDetails, setAllSkuDetails] = useState<SkuDetail[] | []>(
     product?.skuDetails || []
   );
   const [displaySku, setDisplaySku] = useState<SkuDetail | null>(null);
+  const [quantity, setQuantity] = useState(0 || 1);
 
   useEffect(() => {
     if (user?.type && user.type !== userType) {
@@ -78,7 +78,6 @@ const Product = () => {
 
       setProduct(result?.product || {});
       setRelatedProducts(result?.relatedProducts || []);
-      console.log("producto", result.product);
     } catch (error: any) {
       if (error.response?.status === 404 && !signal?.aborted) {
         showErrorToast(
@@ -202,9 +201,9 @@ const Product = () => {
                 max={displaySku?.stock ?? 0}
                 controls={true}
                 step={1}
-                value={quantity}
+                value={displaySku?.stock === 0 ? 0 : quantity}
                 onChange={(value) => setQuantity(Number(value))}
-                disabled={!displaySku?.price || displaySku?.stock === 0}
+                disabled={!displaySku?.price || displaySku?.stock === 0 || quantity === 0}
                 downHandler={<FileMinus fontSize={35} cursor={"pointer"} />}
                 upHandler={<FilePlus fontSize={35} cursor={"pointer"} />}
               />
@@ -212,7 +211,7 @@ const Product = () => {
                 variant="primary"
                 className="cartBtn"
                 onClick={handleCart}
-                disabled={!displaySku?.price || quantity === 0}
+                disabled={!displaySku?.price || displaySku?.stock === 0 || quantity === 0}
               >
                 <BagCheckFill className="cartIcon" />
                 {existingItem ? "Update cart" : "Add to cart"}

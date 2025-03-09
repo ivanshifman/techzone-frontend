@@ -16,7 +16,6 @@ const MyAccountPage = () => {
   const user = state?.user;
   const token = state?.token;
 
-  console.log("token", token);
   const router = useRouter();
 
   const logoutHandler = async () => {

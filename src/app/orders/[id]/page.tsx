@@ -25,7 +25,6 @@ const Order: FC = () => {
   const router = useRouter();
   const { id } = useParams();
   const [order, setOrder] = useState<IOrderOne | null>(null);
-  console.log(order);
 
   useEffect(() => {
     const abortController = new AbortController();

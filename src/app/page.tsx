@@ -60,8 +60,6 @@ const Home = () => {
     return () => abortController.abort();
   }, []);
 
-  console.log("products", products);
-
   const handleDeleteProduct = async () => {
     await fetchProducts();
   };

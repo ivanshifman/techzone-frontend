@@ -74,7 +74,6 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
             });
             setProductForm(result?.product);
             setIsCreating(false);
-            console.log(result.product);
           }
         }
       } catch (error: any) {

@@ -42,8 +42,6 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
     if (user && user?.email) {
       router.replace("/my-account");
     }
-    console.log("user", user);
-    console.log("state", state);
   }, [user?.email, router]);
 
   const getFieldValue = (field: keyof FormValues) => {
@@ -67,7 +65,6 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
         : await Users.loginUser(payload);
 
       if (!success) throw new Error(message);
-      console.log("res", result);
 
       if (!isRegisterForm) {
         dispatch({
