@@ -47,7 +47,7 @@ export const Users = {
     requests.get<ResponsePayload>(`/users/forgot-password/${email}`),
 
   resendOTP: async (email: string): Promise<ResponsePayload> =>
-    requests.get<ResponsePayload>(`/users/send-otp-mail/${email}`),
+    requests.get<ResponsePayload>(`/users/send-otp-email/${email}`),
 
   verifyOTP: async (otp: string, email: string): Promise<ResponsePayload> =>
     requests.get<ResponsePayload>(`/users/verify-email/${otp}/${email}`),
