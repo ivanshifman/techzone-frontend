@@ -17,7 +17,7 @@ api.interceptors.response.use(
       console.warn("Request canceled:", error.message);
       return Promise.reject(error);
     }
-    console.error("API Error:", error.response?.data || error.message);
+    console.error("API Error:", error.response?.data?.errorResponse?.message || error.message);
     return Promise.reject(error);
   }
 );

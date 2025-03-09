@@ -57,7 +57,7 @@ export const useProducts = () => {
       }
     } catch (error: any) {
       if (error.name !== "CanceledError" && error.message !== "canceled") {
-        console.error("API Error:", error);
+        console.error("API Error:", error.response?.data?.errorResponse?.message || error.message);
       }
 
       if (!signal.aborted) {
