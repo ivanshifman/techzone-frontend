@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError, AxiosResponse } from "axios";
 
 export interface ResponsePayload {
@@ -22,21 +23,21 @@ api.interceptors.response.use(
   }
 );
 
-const responseBody = <T>(
+const responseBody = (
   response: AxiosResponse<ResponsePayload>
 ): ResponsePayload => response.data;
 
 const requests = {
-  get: <T>(url: string) => api.get<ResponsePayload>(url).then(responseBody),
-  getSignal: <T>(url: string, signal: AbortSignal) =>
+  get: (url: string) => api.get<ResponsePayload>(url).then(responseBody),
+  getSignal: (url: string, signal: AbortSignal) =>
     api.get<ResponsePayload>(url, { signal }).then(responseBody),
-  post: <T>(url: string, body: any) =>
+  post: (url: string, body: any) =>
     api.post<ResponsePayload>(url, body).then(responseBody),
-  put: <T>(url: string, body: any) =>
+  put: (url: string, body: any) =>
     api.put<ResponsePayload>(url, body).then(responseBody),
-  patch: <T>(url: string, body: any) =>
+  patch: (url: string, body: any) =>
     api.patch<ResponsePayload>(url, body).then(responseBody),
-  delete: <T>(url: string) =>
+  delete: (url: string) =>
     api.delete<ResponsePayload>(url).then(responseBody),
 };
 

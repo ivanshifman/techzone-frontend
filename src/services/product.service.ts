@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import requests, { ResponsePayload } from "./api";
 import queryString from "query-string";
 import { ProductFormType } from "../interfaces/products.interface";
@@ -14,8 +15,8 @@ export const Products = {
     });
 
     const getProductRes = signal
-      ? await requests.getSignal<ResponsePayload>(url, signal)
-      : await requests.get<ResponsePayload>(url);
+      ? await requests.getSignal(url, signal)
+      : await requests.get(url);
     return getProductRes;
   },
 
@@ -24,13 +25,13 @@ export const Products = {
     signal?: AbortSignal
   ): Promise<ResponsePayload> => {
     const getProductRes = signal
-      ? await requests.getSignal<ResponsePayload>(`/products/${id}`, signal)
-      : await requests.get<ResponsePayload>(`/products/${id}`);
+      ? await requests.getSignal(`/products/${id}`, signal)
+      : await requests.get(`/products/${id}`);
     return getProductRes;
   },
 
   saveProduct: async (product: ProductFormType): Promise<ResponsePayload> => {
-    const saveProductRes = await requests.post<ResponsePayload>(
+    const saveProductRes = await requests.post(
       "/products",
       product
     );
@@ -41,7 +42,7 @@ export const Products = {
     id: string,
     product: ProductFormType
   ): Promise<ResponsePayload> => {
-    const updateProductRes = await requests.patch<ResponsePayload>(
+    const updateProductRes = await requests.patch(
       `/products/${id}`,
       product
     );
@@ -49,7 +50,7 @@ export const Products = {
   },
 
   deleteProduct: async (id: string): Promise<ResponsePayload> => {
-    const deleteProductRes = await requests.delete<ResponsePayload>(
+    const deleteProductRes = await requests.delete(
       `/products/${id}`
     );
     return deleteProductRes;
@@ -59,7 +60,7 @@ export const Products = {
     id: string,
     image: any
   ): Promise<ResponsePayload> => {
-    const uploadProductImageRes = await requests.post<ResponsePayload>(
+    const uploadProductImageRes = await requests.post(
       `/products/${id}/image`,
       image
     );
@@ -70,7 +71,7 @@ export const Products = {
     productId: string,
     sku: Record<string, any>
   ): Promise<ResponsePayload> => {
-    const addSkuRes = await requests.post<ResponsePayload>(
+    const addSkuRes = await requests.post(
       `/products/${productId}/skus`,
       sku
     );
@@ -82,7 +83,7 @@ export const Products = {
     skuId: string,
     sku: Record<string, any>
   ): Promise<ResponsePayload> => {
-    const updateSkuRes = await requests.put<ResponsePayload>(
+    const updateSkuRes = await requests.put(
       `/products/${productId}/skus/${skuId}`,
       sku
     );
@@ -93,7 +94,7 @@ export const Products = {
     productId: string,
     skuId: string
   ): Promise<ResponsePayload> => {
-    const deleteSkuRes = await requests.delete<ResponsePayload>(
+    const deleteSkuRes = await requests.delete(
       `/products/${productId}/skus/${skuId}`
     );
     return deleteSkuRes;
@@ -103,7 +104,7 @@ export const Products = {
     productId: string,
     skuId: string
   ): Promise<ResponsePayload> => {
-    const getLicensesRes = await requests.get<ResponsePayload>(
+    const getLicensesRes = await requests.get(
       `/products/${productId}/skus/${skuId}/licenses`
     );
     return getLicensesRes;
@@ -114,7 +115,7 @@ export const Products = {
     skuId: string,
     license: Record<string, any>
   ): Promise<ResponsePayload> => {
-    const addLicenseRes = await requests.post<ResponsePayload>(
+    const addLicenseRes = await requests.post(
       `/products/${productId}/skus/${skuId}/licenses`,
       license
     );
@@ -127,7 +128,7 @@ export const Products = {
     licenseId: string,
     license: Record<string, any>
   ): Promise<ResponsePayload> => {
-    const updateLicenseRes = await requests.put<ResponsePayload>(
+    const updateLicenseRes = await requests.put(
       `/products/${productId}/skus/${skuId}/licenses/${licenseId}`,
       license
     );
@@ -135,7 +136,7 @@ export const Products = {
   },
 
   deleteLicense: async (licenseId: string): Promise<ResponsePayload> => {
-    const deleteLicenseRes = await requests.delete<ResponsePayload>(
+    const deleteLicenseRes = await requests.delete(
       `/products/licenses/${licenseId}`
     );
     return deleteLicenseRes;
@@ -145,7 +146,7 @@ export const Products = {
     productId: string,
     review: Record<string, any>
   ): Promise<ResponsePayload> => {
-    const addReviewRes = await requests.post<ResponsePayload>(
+    const addReviewRes = await requests.post(
       `/products/${productId}/reviews`,
       review
     );
@@ -156,7 +157,7 @@ export const Products = {
     productId: string,
     reviewId: string
   ): Promise<ResponsePayload> => {
-    const addLicenseRes = await requests.delete<ResponsePayload>(
+    const addLicenseRes = await requests.delete(
       `/products/${productId}/reviews/${reviewId}`
     );
     return addLicenseRes;

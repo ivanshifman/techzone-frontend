@@ -78,6 +78,7 @@ const Product = () => {
 
       setProduct(result?.product || {});
       setRelatedProducts(result?.relatedProducts || []);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.response?.status === 404 && !signal?.aborted) {
         showErrorToast(
@@ -86,7 +87,9 @@ const Product = () => {
         return router.replace("/products");
       }
     } finally {
-      !signal?.aborted && setLoading(false);
+      if (!signal?.aborted) {
+        setLoading(false);
+      }
     }
   };
 
@@ -95,6 +98,7 @@ const Product = () => {
     fetchProducts(abortController.signal);
 
     return () => abortController.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productId]);
 
   const hasMultiplePrices =
@@ -165,6 +169,7 @@ const Product = () => {
           <ul>
             {product?.highlights &&
               product?.highlights.length > 0 &&
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               product?.highlights.map((highlight: string, key: any) => (
                 <li key={key}>{highlight}</li>
               ))}
@@ -203,7 +208,11 @@ const Product = () => {
                 step={1}
                 value={displaySku?.stock === 0 ? 0 : quantity}
                 onChange={(value) => setQuantity(Number(value))}
-                disabled={!displaySku?.price || displaySku?.stock === 0 || quantity === 0}
+                disabled={
+                  !displaySku?.price ||
+                  displaySku?.stock === 0 ||
+                  quantity === 0
+                }
                 downHandler={<FileMinus fontSize={35} cursor={"pointer"} />}
                 upHandler={<FilePlus fontSize={35} cursor={"pointer"} />}
               />
@@ -211,7 +220,11 @@ const Product = () => {
                 variant="primary"
                 className="cartBtn"
                 onClick={handleCart}
-                disabled={!displaySku?.price || displaySku?.stock === 0 || quantity === 0}
+                disabled={
+                  !displaySku?.price ||
+                  displaySku?.stock === 0 ||
+                  quantity === 0
+                }
               >
                 <BagCheckFill className="cartIcon" />
                 {existingItem ? "Update cart" : "Add to cart"}

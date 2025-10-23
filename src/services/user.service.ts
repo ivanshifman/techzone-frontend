@@ -1,17 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import requests, { ResponsePayload } from "./api";
 
 export const Users = {
   getUser: async (id: string): Promise<ResponsePayload> =>
-    requests.get<ResponsePayload>(`/users/${id}`),
+    requests.get(`/users/${id}`),
 
   getUsers: async (): Promise<ResponsePayload> =>
-    requests.get<ResponsePayload>("/users"),
+    requests.get("/users"),
 
   registerNewUser: async (user: any): Promise<ResponsePayload> =>
-    requests.post<ResponsePayload>("/users", { ...user, type: "customer" }),
+    requests.post("/users", { ...user, type: "customer" }),
 
   loginUser: async (user: any): Promise<ResponsePayload> => {
-    const loginUserRes = await requests.post<ResponsePayload>(
+    const loginUserRes = await requests.post(
       "/users/login",
       user
     );
@@ -27,7 +28,7 @@ export const Users = {
   },
 
   updateUser: async (user: any, id: string): Promise<ResponsePayload> => {
-    const updateUserRes = await requests.patch<ResponsePayload>(
+    const updateUserRes = await requests.patch(
       `/users/update-name-password/${id}`,
       user
     );
@@ -44,16 +45,16 @@ export const Users = {
   },
 
   forgotUserPassword: async (email: string): Promise<ResponsePayload> =>
-    requests.get<ResponsePayload>(`/users/forgot-password/${email}`),
+    requests.get(`/users/forgot-password/${email}`),
 
   resendOTP: async (email: string): Promise<ResponsePayload> =>
-    requests.get<ResponsePayload>(`/users/send-otp-email/${email}`),
+    requests.get(`/users/send-otp-email/${email}`),
 
   verifyOTP: async (otp: string, email: string): Promise<ResponsePayload> =>
-    requests.get<ResponsePayload>(`/users/verify-email/${otp}/${email}`),
+    requests.get(`/users/verify-email/${otp}/${email}`),
 
   logoutUser: async (): Promise<ResponsePayload> => {
-    const logoutUserRes = await requests.put<ResponsePayload>(
+    const logoutUserRes = await requests.put(
       "/users/logout",
       {}
     );

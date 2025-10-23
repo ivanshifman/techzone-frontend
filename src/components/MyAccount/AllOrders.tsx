@@ -28,6 +28,7 @@ const AllOrders = () => {
         throw new Error(message);
       }
       setOrders(result.length > 0 ? result : []);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       showErrorToast(
         error?.response?.data?.errorResponse.message || error?.message

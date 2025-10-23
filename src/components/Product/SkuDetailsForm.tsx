@@ -78,6 +78,7 @@ const SkuDetailsForm: FC<ISkuDetailsFormProps> = ({
         data.validity = Number.MAX_SAFE_INTEGER;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { validityType, ...sanitizedData } = data;
 
       const { result, success, message } = skuIdForUpdate
@@ -90,6 +91,7 @@ const SkuDetailsForm: FC<ISkuDetailsFormProps> = ({
       setSkuDetailsFormShow(false);
       setSkuIdForUpdate("");
       setAllSkuDetails(result?.skuDetails);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       showErrorToast(
         error?.response?.data?.errorResponse.message || error?.message

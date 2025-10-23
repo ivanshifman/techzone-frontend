@@ -41,6 +41,7 @@ const Home = () => {
       setProducts(
         data?.result[0] || { latestProducts: [], topRatedProducts: [] }
       );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (!axios.isCancel(error)) {
         showErrorToast(
@@ -49,7 +50,9 @@ const Home = () => {
         console.error("Error fetching products", error);
       }
     } finally {
-      !signal?.aborted && setLoading(false);
+      if (!signal?.aborted) {
+        setLoading(false);
+      }
     }
   };
 

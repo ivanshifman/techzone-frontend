@@ -18,11 +18,11 @@ const ProductFilter: FC<ProductFilterProps> = ({
 
   const currentCategory = useMemo(
     () => searchParams.get("category") || "Category",
-    [searchParams.toString()]
+    [searchParams]
   );
   const currentPlatform = useMemo(
     () => searchParams.get("platformType") || "Platform",
-    [searchParams.toString()]
+    [searchParams]
   );
 
   const [filterCatText, setFilterCatText] = useState(currentCategory);

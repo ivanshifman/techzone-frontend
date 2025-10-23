@@ -36,6 +36,12 @@ const TopHead = () => {
 
   const navigateTo = (path: string) => router.push(path);
 
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const handleSearch = () => {
     if (searchText.trim()) {
       navigateTo(`/products?search=${searchText}`);
@@ -44,15 +50,22 @@ const TopHead = () => {
   };
 
   const handleUserClick = () => {
-    user && user.email ? navigateTo("/my-account") : navigateTo("/auth");
+    if (user && user.email) {
+      navigateTo("/my-account");
+    } else {
+      navigateTo("/auth");
+    }
   };
 
   const handleBaseTypeChange = (type: string | null) => {
-    if (type) {
-      setBaseType(type);
-      type === "Applications"
-        ? navigateTo("/products")
-        : navigateTo(`/products?baseType=${type}`);
+    if (!type) return;
+
+    setBaseType(type);
+
+    if (type === "Applications") {
+      navigateTo("/products");
+    } else {
+      navigateTo(`/products?baseType=${type}`);
     }
   };
 
@@ -63,7 +76,7 @@ const TopHead = () => {
     } else if (!queryBaseType) {
       setBaseType("Applications");
     }
-  }, [pathname, searchParams]);
+  }, [baseType, pathname, searchParams]);
 
   useEffect(() => {
     setTotal(
@@ -118,18 +131,20 @@ const TopHead = () => {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link onClick={() => navigateTo("/")}>Home</Nav.Link>
-            <NavDropdown title={baseType} id="collasible-nav-dropdown">
-              {uniqueBasesTypes.map((type) => (
-                <NavDropdown.Item
-                  key={type}
-                  onClick={() => handleBaseTypeChange(type)}
-                >
-                  {type}
-                </NavDropdown.Item>
-              ))}
-            </NavDropdown>
+            {isClient && (
+              <NavDropdown title={baseType} id="collasible-nav-dropdown">
+                {uniqueBasesTypes.map((type) => (
+                  <NavDropdown.Item
+                    key={type}
+                    onClick={() => handleBaseTypeChange(type)}
+                  >
+                    {type}
+                  </NavDropdown.Item>
+                ))}
+              </NavDropdown>
+            )}
           </Nav>
-          {user && user?.type !== "admin" && (
+          {isClient && user && user?.type !== "admin" && (
             <Nav>
               <Nav.Link
                 className={styles.cartItems}
@@ -141,7 +156,9 @@ const TopHead = () => {
           )}
         </Navbar.Collapse>
       </Navbar>
-      <CartOffCanvas setShow={setShow} show={show} items={cartItems} />
+      {isClient && (
+        <CartOffCanvas setShow={setShow} show={show} items={cartItems} />
+      )}
     </Suspense>
   );
 };

@@ -41,6 +41,7 @@ const Order: FC = () => {
         if (success) {
           setOrder(result);
         }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         if (
           (error.response?.status === 404 || error.response?.status === 400) &&
@@ -60,7 +61,7 @@ const Order: FC = () => {
 
     fetchOrder(abortController.signal);
     return () => abortController.abort();
-  }, [id]);
+  }, [id, router]);
 
   const renderLicenses = (licenses: ISkuDetailsLicense[] | string[]) => {
     if (!licenses.length) return "Not Found";

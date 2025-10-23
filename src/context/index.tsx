@@ -146,7 +146,7 @@ const Provider = ({ children }: Props) => {
     );
 
     return () => axios.interceptors.response.eject(interceptor);
-  }, [router]);
+  }, [cartKey, router]);
 
   return (
     <Context.Provider value={{ state, dispatch, cartItems, cartDispatch }}>

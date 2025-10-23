@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC, useState } from "react";
 import { useAppContext } from "../../context";
 import { Products } from "../../services/product.service";

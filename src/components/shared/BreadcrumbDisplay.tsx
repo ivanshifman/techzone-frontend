@@ -22,4 +22,6 @@ const BreadcrumbDisplay: FC<IPropsBreadcrumb> = memo(({ childrens = [] }) => {
   );
 });
 
+BreadcrumbDisplay.displayName = "BreadcrumbDisplay";
+
 export default BreadcrumbDisplay;

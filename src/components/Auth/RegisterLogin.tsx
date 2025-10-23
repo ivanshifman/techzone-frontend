@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { FC, useEffect, useState } from "react";
@@ -42,6 +43,7 @@ const RegisterLogin: FC<IRegisterLoginProps> = ({ isRegisterForm = false }) => {
     if (user && user?.email) {
       router.replace("/my-account");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.email, router]);
 
   const getFieldValue = (field: keyof FormValues) => {

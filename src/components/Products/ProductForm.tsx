@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FC, useEffect, useState } from "react";
@@ -88,7 +89,7 @@ const ProductForm: FC<UpdateProductProps> = ({ productId }) => {
     };
 
     fetchProduct();
-  }, [productId, setValue]);
+  }, [productId, router, setValue]);
 
   useEffect(() => {
     if (

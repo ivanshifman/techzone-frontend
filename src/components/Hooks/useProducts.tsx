@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { Products } from "../../services/product.service";
 import { showErrorToast } from "../../utils/toast";
@@ -21,7 +21,7 @@ export const useProducts = () => {
   const queryParams = useMemo(() => {
     const entries = [...searchParams.entries()];
     return Object.fromEntries(entries);
-  }, [searchParams.toString()]);
+  }, [searchParams]);
 
   const uniquePlatformsTypes = useMemo(
     () =>
@@ -43,40 +43,49 @@ export const useProducts = () => {
     [products]
   );
 
-  const fetchProducts = async (signal: AbortSignal) => {
-    setLoading(true);
-    try {
-      const { success, result } = await Products.getProducts(
-        queryParams,
-        false,
-        signal
-      );
-      if (success) {
-        setProducts(result?.products || []);
-        setMetadata(result?.metadata || {});
-      }
-    } catch (error: any) {
-      if (error.name !== "CanceledError" && error.message !== "canceled") {
-        console.error("API Error:", error.response?.data?.errorResponse?.message || error.message);
-      }
-
-      if (!signal.aborted) {
-        showErrorToast(
-          error?.response?.data?.errorResponse?.message || error?.message
+  const fetchProducts = useCallback(
+    async (signal: AbortSignal) => {
+      setLoading(true);
+      try {
+        const { success, result } = await Products.getProducts(
+          queryParams,
+          false,
+          signal
         );
-        console.error("Error fetching products", error);
+        if (success) {
+          setProducts(result?.products || []);
+          setMetadata(result?.metadata || {});
+        }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        if (error.name !== "CanceledError" && error.message !== "canceled") {
+          console.error(
+            "API Error:",
+            error.response?.data?.errorResponse?.message || error.message
+          );
+        }
+
+        if (!signal.aborted) {
+          showErrorToast(
+            error?.response?.data?.errorResponse?.message || error?.message
+          );
+          console.error("Error fetching products", error);
+        }
+      } finally {
+        if (!signal?.aborted) {
+          setLoading(false);
+        }
       }
-    } finally {
-      !signal.aborted && setLoading(false);
-    }
-  };
+    },
+    [queryParams]
+  );
 
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
     fetchProducts(signal);
     return () => abortController.abort();
-  }, [queryParams]);
+  }, [fetchProducts]);
 
   return {
     fetchProducts,
